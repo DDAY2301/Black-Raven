@@ -19,3 +19,5 @@ Static three-page bilingual website built from the supplied project materials.
 https://dday2301.github.io/Black-Raven/
 
 Deployment is managed automatically from the `main` branch through GitHub Pages.
+
+GitHub Pages is enabled by the deployment workflow.
