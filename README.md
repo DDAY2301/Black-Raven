@@ -1,23 +1,19 @@
-# Black Raven Solutions — Wilderness Academy website
+# Black Raven Solutions — Wilderness Academy
 
-Static three-page bilingual website built from the supplied project materials.
+Official bilingual presentation website for Black Raven Solutions Wilderness Academy.
 
 ## Pages
-- `index.html` — project landing page
-- `gallery.html` — supplied visual materials and lightbox
-- `stories.html` — participant testimonials from September 2024
+- `index.html` — project and programme overview
+- `gallery.html` — gallery
+- `stories.html` — participant stories
 
 ## Features
 - Slovenian / English language toggle with saved preference
 - Responsive navigation and layouts
-- Army green / forest green visual system
-- Lightweight SVG Black Raven site mark plus the supplied Miha Berčič signature artwork
-- No framework or third-party runtime dependency
-- GitHub Pages workflow deploying the repository root
+- Forest green / army green brand palette
+- Black Raven visual identity and Miha Berčič signature artwork
+- Lightweight static HTML, CSS and JavaScript
+- Automated GitHub Pages deployment from `main`
 
 ## Production
 https://dday2301.github.io/Black-Raven/
-
-Deployment is managed automatically from the `main` branch through GitHub Pages.
-
-GitHub Pages is enabled by the deployment workflow.
