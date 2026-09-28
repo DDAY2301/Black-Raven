@@ -19,6 +19,20 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Build generated program images
+        shell: bash
+        run: |
+          mkdir -p assets/images
+          base64 -d .site-assets/program-weekend.b64 > assets/images/program-weekend.avif
+          base64 -d .site-assets/program-camps.b64 > assets/images/program-camps.avif
+          base64 -d .site-assets/program-workshops.b64 > assets/images/program-workshops.avif
+          base64 -d .site-assets/program-team.b64 > assets/images/program-team.avif
+          base64 -d .site-assets/program-expeditions.b64 > assets/images/program-expeditions.avif
+          test -s assets/images/program-weekend.avif
+          test -s assets/images/program-camps.avif
+          test -s assets/images/program-workshops.avif
+          test -s assets/images/program-team.avif
+          test -s assets/images/program-expeditions.avif
       - uses: actions/configure-pages@v5
         with:
           enablement: true
