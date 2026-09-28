@@ -2043,3 +2043,320 @@ p{
     padding-right:.65rem;
   }
 }
+
+/* --- Typography cohesion & active controls --- */
+
+body{
+  font-family:"Manrope",Inter,"Helvetica Neue",Arial,sans-serif;
+  font-weight:400;
+}
+h1,h2,h3,
+.field-index-list strong,
+.season-list strong,
+.expedition-list h3,
+.manifesto blockquote,
+.proof-copy blockquote,
+.archive-meta strong,
+.timeline-title strong,
+.note-meta strong,
+.field-note blockquote,
+.contact-strip a,
+.visual-preview-item strong,
+.experience-promise h2,
+.promise-grid h3{
+  font-family:"Newsreader","Iowan Old Style",Georgia,serif;
+  font-weight:500;
+  font-variation-settings:"opsz" 48;
+}
+.brand-hero h1{
+  font-variation-settings:"opsz" 72;
+  font-weight:600;
+}
+h2{
+  line-height:1.04!important;
+}
+h3{
+  line-height:1.12!important;
+}
+p{
+  font-weight:400;
+  letter-spacing:-.004em;
+}
+.kicker,.eyebrow,.program-code,.field-no,.course-row-no,.note-meta span,.archive-meta b,
+.nav-links a,.btn,.card-action,.expedition-action{
+  font-family:"Manrope",Inter,sans-serif;
+}
+
+/* Experience promise */
+.experience-promise{
+  padding:clamp(1rem,3vw,2.5rem) 0 clamp(5.5rem,8vw,8rem);
+  background:linear-gradient(180deg,#f4f0e7 0%,#f8f5ee 100%);
+}
+.experience-promise-head{
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  gap:clamp(2rem,5vw,5rem);
+  align-items:end;
+  margin-bottom:2rem;
+}
+.experience-promise-head h2{
+  margin:.7rem 0 0;
+  max-width:11ch;
+  font-size:clamp(2.6rem,5vw,4.8rem);
+  letter-spacing:-.04em;
+}
+.promise-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1rem;
+}
+.promise-grid article{
+  min-height:245px;
+  padding:1.55rem;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(217,131,93,.09),transparent 28%),
+    rgba(255,255,255,.68);
+  border:1px solid rgba(20,42,30,.07);
+  box-shadow:0 12px 32px rgba(30,48,37,.05);
+  display:flex;
+  flex-direction:column;
+  transition:transform .22s ease,box-shadow .22s ease,background .22s ease;
+}
+.promise-grid article:hover{
+  transform:translateY(-4px);
+  background:#fff;
+  box-shadow:var(--soft-shadow);
+}
+.promise-icon{
+  display:grid;
+  place-items:center;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:#e6eee4;
+  color:#315c45;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.08em;
+}
+.promise-grid h3{
+  margin:auto 0 .6rem;
+  font-size:clamp(1.55rem,2.5vw,2.2rem);
+  color:#1d3929;
+}
+.promise-grid p{
+  margin:0;
+  font-size:.92rem;
+}
+
+/* Active card actions */
+.card-action,
+.expedition-action{
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  width:max-content;
+  margin-top:1rem;
+  padding:.58rem .8rem .58rem .9rem;
+  border-radius:999px;
+  background:#edf1ea;
+  color:#274b37;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.005em;
+  border:1px solid rgba(39,75,55,.08);
+  transition:transform .16s ease,background .16s ease,box-shadow .16s ease,color .16s ease;
+}
+.card-action b,
+.expedition-action b{
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#dfe8dd;
+  font-size:.72rem;
+  transition:transform .16s ease;
+}
+.card-action:hover,
+.expedition-action:hover{
+  transform:translateY(-2px);
+  background:#fff;
+  box-shadow:0 9px 24px rgba(23,55,38,.10);
+  color:#183c29;
+}
+.card-action:hover b,
+.expedition-action:hover b{
+  transform:translate(2px,-2px);
+}
+.card-action.on-dark{
+  background:rgba(255,255,255,.10);
+  color:#f2f6f1;
+  border-color:rgba(255,255,255,.12);
+}
+.card-action.on-dark b{
+  background:rgba(255,255,255,.10);
+}
+.card-action.on-dark:hover{
+  background:rgba(255,255,255,.16);
+  color:#fff;
+}
+
+/* Camps are real links */
+.season-list a{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  align-items:flex-end;
+  min-height:132px;
+  padding:1.2rem 1.35rem;
+  border:1px solid rgba(20,42,30,.08);
+  border-radius:22px;
+  background:rgba(255,255,255,.55);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.season-list a:hover{
+  transform:translateY(-3px);
+  background:#fff;
+  box-shadow:var(--soft-shadow);
+}
+.season-list a span{
+  color:var(--soft-ember);
+  font-size:.72rem;
+  font-weight:700;
+}
+.season-list a strong{
+  margin-left:auto;
+  font-size:clamp(1.7rem,3vw,2.8rem);
+}
+.season-list a b{
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#e5ece2;
+  color:#315c45;
+}
+
+/* Expeditions: CTA sits visibly inside */
+.expedition-action{
+  margin-top:1.2rem;
+  background:rgba(255,255,255,.11);
+  border-color:rgba(255,255,255,.12);
+  color:#fff;
+  backdrop-filter:blur(8px);
+}
+.expedition-action b{
+  background:rgba(255,255,255,.12);
+}
+.expedition-action:hover{
+  background:rgba(255,255,255,.18);
+  color:#fff;
+}
+
+/* Make interactions unmistakably active */
+a,button{
+  -webkit-tap-highlight-color:transparent;
+}
+a:focus-visible,
+button:focus-visible{
+  outline:3px solid rgba(217,131,93,.55);
+  outline-offset:4px;
+  border-radius:14px;
+}
+.btn:active,
+.card-action:active,
+.expedition-action:active,
+.field-index-list a:active,
+.season-list a:active,
+.visual-preview-item:active,
+.nav-contact:active{
+  transform:translateY(1px) scale(.985);
+}
+.lang-switch button:active,
+.menu-button:active{
+  transform:scale(.94);
+}
+.visual-preview-item,
+.field-index-list a,
+.archive-item,
+.archive-feature{
+  cursor:pointer;
+}
+
+/* More breathing room for action-enabled cards */
+.course-row>div p,
+.workshop-list article>div p{
+  margin-bottom:0;
+}
+.workshop-list article>div{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.workshop-list article .card-action{
+  margin-top:auto;
+  padding-top:.58rem;
+}
+.course-row>div{
+  min-width:0;
+}
+
+/* Softer section transitions */
+.program-section,
+.visual-preview,
+.proof-section,
+.archive-section,
+.notes-section{
+  position:relative;
+}
+.program-section::after,
+.visual-preview::after,
+.proof-section::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:min(78%,900px);
+  height:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(39,75,55,.08),transparent);
+}
+
+/* Better compact typography */
+.brand-copy strong{
+  font-family:"Manrope",sans-serif;
+  letter-spacing:.12em;
+}
+.hero-intro,
+.section-head p,
+.program-heading>p,
+.inner-hero p,
+.archive-note p{
+  font-size:clamp(1rem,1.25vw,1.1rem);
+}
+
+@media(max-width:980px){
+  .promise-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .experience-promise-head{
+    grid-template-columns:1fr;
+  }
+}
+@media(max-width:620px){
+  .promise-grid{
+    grid-template-columns:1fr;
+  }
+  .promise-grid article{
+    min-height:205px;
+  }
+  .season-list a{
+    align-items:center;
+  }
+  .season-list a strong{
+    font-size:1.65rem;
+  }
+}
