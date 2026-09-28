@@ -84,5 +84,32 @@
       });
     }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
     targets.forEach(el => observer.observe(el));
+
+    const staggerGroups = [
+      '.field-index-list a',
+      '.course-row',
+      '.workshop-list article',
+      '.expedition-list article',
+      '.visual-preview-item',
+      '.archive-item',
+      '.field-note'
+    ];
+    staggerGroups.forEach(selector => {
+      document.querySelectorAll(selector).forEach((el, index) => {
+        el.style.setProperty('--stagger', `${Math.min(index, 7) * 55}ms`);
+        el.classList.add('micro-reveal');
+      });
+    });
+
+    const microObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          microObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .06, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.micro-reveal').forEach(el => microObserver.observe(el));
   }
 })();
