@@ -2882,3 +2882,229 @@ button:focus-visible{
     line-height:1.05;
   }
 }
+
+/* --- Detailed section imagery --- */
+
+/* Restore clean upper program index */
+.field-index-list a{
+  grid-template-columns:70px minmax(0,1fr) 180px 30px;
+}
+.program-thumb{display:none!important;}
+
+/* Shared section imagery */
+.section-visual{
+  position:relative;
+  overflow:hidden;
+  margin:0;
+  border-radius:28px;
+  background:#dfe5dc;
+  box-shadow:0 22px 55px rgba(23,48,34,.10);
+  isolation:isolate;
+}
+.section-visual::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(to top,rgba(10,30,20,.34),transparent 46%),
+    radial-gradient(circle at 80% 18%,rgba(255,255,255,.08),transparent 25%);
+}
+.section-visual img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:saturate(.90) contrast(1.025) brightness(.98);
+  transition:transform .4s cubic-bezier(.2,.7,.2,1),filter .3s ease;
+}
+.section-visual:hover img{
+  transform:scale(1.025);
+  filter:saturate(.98) contrast(1.035) brightness(1);
+}
+.section-visual figcaption{
+  position:absolute;
+  z-index:2;
+  left:1.3rem;
+  right:1.3rem;
+  bottom:1.2rem;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  color:#fff;
+}
+.section-visual figcaption span{
+  font-family:"Manrope",sans-serif;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.12em;
+}
+.section-visual figcaption strong{
+  max-width:18ch;
+  text-align:right;
+  font-family:"Newsreader",Georgia,serif;
+  font-size:clamp(1.3rem,2vw,2rem);
+  line-height:1.06;
+  font-weight:500;
+}
+.section-visual-wide{
+  width:100%;
+  aspect-ratio:16 / 6;
+  margin:0 0 1.2rem;
+}
+.section-visual-wide img{
+  object-position:center 42%;
+}
+
+/* Weekend courses */
+#vikend-tecaji .section-visual-wide{
+  aspect-ratio:16 / 6.2;
+}
+#vikend-tecaji .section-visual-wide img{
+  object-position:center 43%;
+}
+
+/* Camps */
+.split-program-grid{
+  grid-template-columns:1.05fr .72fr .92fr;
+  gap:clamp(1.3rem,3.5vw,3.2rem);
+  align-items:stretch;
+}
+.section-visual-tall{
+  min-height:340px;
+  align-self:stretch;
+}
+.section-visual-tall img{
+  object-position:center;
+}
+.section-visual-badge{
+  position:absolute;
+  z-index:2;
+  left:1rem;
+  bottom:1rem;
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:.45rem .72rem;
+  border-radius:999px;
+  background:rgba(15,43,29,.68);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  font-size:.72rem;
+  font-weight:700;
+  backdrop-filter:blur(8px);
+}
+
+/* Workshops */
+#delavnice .section-visual-wide{
+  aspect-ratio:16 / 5.7;
+}
+#delavnice .section-visual-wide img{
+  object-position:center 48%;
+}
+
+/* Team building */
+.dark-program-grid{
+  grid-template-columns:80px minmax(0,.95fr) minmax(260px,.72fr) minmax(280px,.82fr);
+  gap:clamp(1.3rem,3vw,2.6rem);
+  align-items:center;
+}
+.team-copy{
+  align-self:center;
+}
+.team-visual{
+  min-height:320px;
+  height:100%;
+  border-radius:24px;
+  box-shadow:0 20px 48px rgba(0,0,0,.18);
+}
+.team-visual img{
+  object-position:center;
+}
+
+/* Expeditions */
+.expedition-visual{
+  aspect-ratio:16 / 5.5;
+  margin-bottom:1.2rem;
+}
+.expedition-visual img{
+  object-position:center 44%;
+}
+
+/* Make section images feel integrated, not like banners */
+.program-heading + .section-visual{
+  margin-top:.35rem;
+}
+.section-visual + .course-list,
+.section-visual + .workshop-list,
+.section-visual + .expedition-list{
+  margin-top:1.15rem;
+}
+
+@media(max-width:1080px){
+  .split-program-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .split-program-copy{
+    grid-column:1 / -1;
+  }
+  .dark-program-grid{
+    grid-template-columns:70px 1fr 1fr;
+  }
+  .team-visual{
+    grid-column:2 / -1;
+    min-height:300px;
+  }
+}
+@media(max-width:760px){
+  .field-index-list a{
+    grid-template-columns:46px minmax(0,1fr) 22px;
+  }
+  .field-meta{display:none;}
+  .section-visual{
+    border-radius:20px;
+  }
+  .section-visual-wide,
+  #vikend-tecaji .section-visual-wide,
+  #delavnice .section-visual-wide,
+  .expedition-visual{
+    aspect-ratio:4 / 3;
+  }
+  .section-visual figcaption{
+    left:1rem;
+    right:1rem;
+    bottom:.9rem;
+  }
+  .split-program-grid{
+    grid-template-columns:1fr;
+  }
+  .split-program-copy{
+    grid-column:auto;
+  }
+  .section-visual-tall{
+    min-height:260px;
+    aspect-ratio:4 / 3;
+  }
+  .dark-program-grid{
+    grid-template-columns:1fr;
+  }
+  .team-visual{
+    grid-column:auto;
+    min-height:260px;
+    aspect-ratio:4 / 3;
+  }
+}
+@media(max-width:520px){
+  .field-index-list a{
+    grid-template-columns:38px minmax(0,1fr) 18px;
+  }
+  .section-visual figcaption{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.25rem;
+  }
+  .section-visual figcaption strong{
+    text-align:left;
+  }
+}
