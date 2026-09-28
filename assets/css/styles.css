@@ -2537,3 +2537,53 @@ button:focus-visible{
     height:44px;
   }
 }
+
+/* --- Hero background video --- */
+.brand-hero{
+  isolation:isolate;
+}
+.hero-video{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  opacity:.46;
+  filter:saturate(.82) contrast(1.04) brightness(.72);
+  transform:scale(1.015);
+  pointer-events:none;
+}
+.hero-video-overlay{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(10,27,19,.90) 0%,rgba(13,34,24,.78) 36%,rgba(19,50,35,.50) 67%,rgba(20,53,37,.36) 100%),
+    linear-gradient(to top,rgba(10,28,20,.74) 0%,rgba(10,28,20,.18) 48%,rgba(10,28,20,.28) 100%),
+    radial-gradient(circle at 78% 24%,rgba(128,163,132,.17),transparent 28%);
+}
+.brand-hero::after{
+  z-index:1;
+}
+.brand-hero-grid{
+  z-index:2;
+}
+@media(max-width:760px){
+  .hero-video{
+    object-position:58% center;
+    opacity:.40;
+  }
+  .hero-video-overlay{
+    background:
+      linear-gradient(90deg,rgba(10,27,19,.92),rgba(14,38,26,.70)),
+      linear-gradient(to top,rgba(10,27,19,.78),rgba(10,27,19,.18));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-video{
+    display:none;
+  }
+}
