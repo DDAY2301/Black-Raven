@@ -65,6 +65,53 @@
 
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
 
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+      const item = button.closest('.faq-item');
+      const answer = item?.querySelector('.faq-answer');
+      if (!item || !answer) return;
+
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
+
+      document.querySelectorAll('.faq-question[aria-expanded="true"]').forEach(openButton => {
+        if (openButton === button) return;
+        openButton.setAttribute('aria-expanded', 'false');
+        const openItem = openButton.closest('.faq-item');
+        openItem?.classList.remove('is-open');
+        const openAnswer = openItem?.querySelector('.faq-answer');
+        if (openAnswer) openAnswer.hidden = true;
+      });
+
+      button.setAttribute('aria-expanded', String(!isOpen));
+      item.classList.toggle('is-open', !isOpen);
+      answer.hidden = isOpen;
+    });
+  });
+
+  // Page progress and back-to-top affordance
+  const progress = document.createElement('div');
+  progress.className = 'page-progress';
+  progress.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(progress);
+
+  const backTop = document.createElement('button');
+  backTop.className = 'back-to-top';
+  backTop.type = 'button';
+  backTop.setAttribute('aria-label', 'Back to top');
+  backTop.innerHTML = '<span>↑</span>';
+  document.body.appendChild(backTop);
+
+  const syncProgress = () => {
+    const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    const ratio = Math.min(Math.max(window.scrollY / max, 0), 1);
+    progress.style.transform = `scaleX(${ratio})`;
+    backTop.classList.toggle('is-visible', window.scrollY > 700);
+  };
+  syncProgress();
+  window.addEventListener('scroll', syncProgress, { passive: true });
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
   const header = document.querySelector('.site-header');
   if (header) {
     const syncHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
