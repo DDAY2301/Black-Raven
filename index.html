@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <script defer src="assets/js/main.js"></script>
 </head>
-<body
+<body class="home"
   data-title-sl="Black Raven Solutions — Wilderness Academy"
   data-title-en="Black Raven Solutions — Wilderness Academy"
   data-desc-sl="Black Raven Solutions Wilderness Academy — vikend tečaji, tabori, delavnice, team buildingi in mednarodne ekspedicije v naravi."
@@ -44,34 +44,52 @@
 </header>
 
 <main id="main">
-  <section class="hero hero-programs">
-    <div class="wrap hero-grid">
+  <section class="hero hero-programs hero-cinematic">
+    <div class="hero-backdrop" aria-hidden="true"></div>
+    <div class="wrap hero-cinematic-inner">
       <div class="hero-copy">
         <div class="kicker">Black Raven Solutions · Wilderness Academy</div>
         <h1 class="display" data-sl="Narava brez strahu." data-en="Nature without fear.">Narava brez strahu.</h1>
-        <p class="lead" data-sl="Ustvarjamo izkušnje, kjer ljudje ponovno vzpostavijo pristen stik z naravo, pridobijo uporabne veščine, razvijajo samostojnost in samozavest ter se odmaknejo od vsakdanjega ritma." data-en="We create experiences that reconnect people with nature, build useful skills, strengthen independence and confidence, and create space away from the everyday rhythm.">Ustvarjamo izkušnje, kjer ljudje ponovno vzpostavijo pristen stik z naravo, pridobijo uporabne veščine, razvijajo samostojnost in samozavest ter se odmaknejo od vsakdanjega ritma.</p>
+        <p class="lead" data-sl="Pristne izkušnje v naravi za ljudi, ki želijo več znanja, več samostojnosti in manj strahu pred divjim." data-en="Authentic outdoor experiences for people who want more skill, more independence and less fear of the wild.">Pristne izkušnje v naravi za ljudi, ki želijo več znanja, več samostojnosti in manj strahu pred divjim.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#ponudba" data-sl="Poglej ponudbo" data-en="Explore programs">Poglej ponudbo</a>
-          <a class="btn btn-ghost" href="mailto:info@blackraven.solutions" data-sl="Vprašaj za termin" data-en="Ask about dates">Vprašaj za termin</a>
+          <a class="btn btn-light" href="#ponudba" data-sl="Izberi svojo izkušnjo" data-en="Choose your experience">Izberi svojo izkušnjo</a>
+          <a class="hero-text-link" href="mailto:info@blackraven.solutions" data-sl="Vprašaj za termin →" data-en="Ask about dates →">Vprašaj za termin →</a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="poster-frame">
-          <img src="assets/images/mala-gozdna-sola.webp" width="1080" height="1080" alt="Mala gozdna šola Black Raven Solutions" data-alt-sl="Mala gozdna šola Black Raven Solutions" data-alt-en="Black Raven Solutions Little Forest School" loading="eager" decoding="async" fetchpriority="high">
-        </div>
-      </div>
+      <div class="hero-scroll-cue"><span data-sl="Razišči" data-en="Explore">Razišči</span><span>↓</span></div>
     </div>
   </section>
 
-  <section class="program-index" id="ponudba">
-    <div class="wrap program-index-inner">
-      <span class="program-index-label" data-sl="Izberi izkušnjo" data-en="Choose an experience">Izberi izkušnjo</span>
-      <div class="program-index-links">
-        <a href="#vikend-tecaji"><span>A</span><strong data-sl="Vikend tečaji" data-en="Weekend courses">Vikend tečaji</strong></a>
-        <a href="#tabori"><span>B</span><strong data-sl="Tabori" data-en="Camps">Tabori</strong></a>
-        <a href="#delavnice"><span>C</span><strong data-sl="Delavnice" data-en="Workshops">Delavnice</strong></a>
-        <a href="#team-building"><span>D</span><strong>Team building</strong></a>
-        <a href="#ekspedicije"><span>E</span><strong data-sl="Ekspedicije" data-en="Expeditions">Ekspedicije</strong></a>
+  <section class="adventure-picker" id="ponudba">
+    <div class="wrap">
+      <div class="picker-heading">
+        <div>
+          <div class="kicker" data-sl="Izberi izkušnjo" data-en="Choose your experience">Izberi izkušnjo</div>
+          <h2 data-sl="Kaj te vleče v naravo?" data-en="What pulls you outdoors?">Kaj te vleče v naravo?</h2>
+        </div>
+        <p data-sl="Od prvega vikenda v gozdu do ekspedicije na drugem koncu sveta. Izberi program glede na znanje, starost, skupino in intenzivnost." data-en="From a first weekend in the forest to an expedition on the other side of the world. Choose by skill level, age, group and intensity.">Od prvega vikenda v gozdu do ekspedicije na drugem koncu sveta. Izberi program glede na znanje, starost, skupino in intenzivnost.</p>
+      </div>
+      <div class="adventure-grid">
+        <a class="adventure-card adventure-card-main" href="#vikend-tecaji">
+          <span class="adventure-card-index">01</span>
+          <div><span class="adventure-card-kicker">A</span><h3 data-sl="Vikend tečaji" data-en="Weekend courses">Vikend tečaji</h3><p data-sl="Osnovni, nadaljevalni, ekstremni, zimski in družinski programi." data-en="Basic, advanced, extreme, winter and family programs.">Osnovni, nadaljevalni, ekstremni, zimski in družinski programi.</p></div>
+        </a>
+        <a class="adventure-card" href="#tabori">
+          <span class="adventure-card-index">02</span>
+          <div><span class="adventure-card-kicker">B</span><h3 data-sl="Tabori" data-en="Camps">Tabori</h3><p data-sl="Poletni in zimski programi za daljšo izkušnjo v naravi." data-en="Summer and winter programs for a longer experience outdoors.">Poletni in zimski programi za daljšo izkušnjo v naravi.</p></div>
+        </a>
+        <a class="adventure-card" href="#delavnice">
+          <span class="adventure-card-index">03</span>
+          <div><span class="adventure-card-kicker">C</span><h3 data-sl="Delavnice" data-en="Workshops">Delavnice</h3><p data-sl="Ogenj, divja hrana, drevesa, otroci in tematska doživetja." data-en="Fire, wild food, trees, children and themed outdoor experiences.">Ogenj, divja hrana, drevesa, otroci in tematska doživetja.</p></div>
+        </a>
+        <a class="adventure-card" href="#team-building">
+          <span class="adventure-card-index">04</span>
+          <div><span class="adventure-card-kicker">D</span><h3>Team building</h3><p data-sl="Praktični izzivi, sodelovanje in komunikacija zunaj pisarne." data-en="Practical challenges, cooperation and communication outside the office.">Praktični izzivi, sodelovanje in komunikacija zunaj pisarne.</p></div>
+        </a>
+        <a class="adventure-card adventure-card-wide" href="#ekspedicije">
+          <span class="adventure-card-index">05</span>
+          <div><span class="adventure-card-kicker">E</span><h3 data-sl="Mednarodne ekspedicije" data-en="International expeditions">Mednarodne ekspedicije</h3><p data-sl="Sumatra in severna Kanada — izkušnje, ki presežejo domači teren." data-en="Sumatra and Northern Canada — experiences beyond home ground.">Sumatra in severna Kanada — izkušnje, ki presežejo domači teren.</p></div>
+        </a>
       </div>
     </div>
   </section>
