@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script defer src="assets/js/main.js"></script>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260928-hero2">
+  <script defer src="assets/js/main.js?v=20260928-hero2"></script>
 </head>
 <body class="home"
   data-title-sl="Black Raven Solutions — Wilderness Academy"
@@ -48,7 +48,7 @@
 
 <main id="main">
   <section class="brand-hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+    <video class="hero-video" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none;z-index:0" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" disablepictureinpicture>
       <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e7/Summer_Afternoon_on_the_Lower_Crawford_Trail%2C_looking_towards_Bellevue_Canyon.webm/Summer_Afternoon_on_the_Lower_Crawford_Trail%2C_looking_towards_Bellevue_Canyon.webm.480p.vp9.webm" type="video/webm">
       <source src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Summer_Afternoon_on_the_Lower_Crawford_Trail%2C_looking_towards_Bellevue_Canyon.webm" type="video/webm">
     </video>
@@ -69,15 +69,15 @@
         </div>
       </div>
 
-      <div class="brand-hero-visual">
+      <div class="brand-hero-visual hero-glass-zone">
         <div class="hero-mark" aria-hidden="true">
           <img src="assets/brand/raven-mark.svg" alt="">
         </div>
-        <div class="field-card">
-          <span class="field-card-label">WILDERNESS ACADEMY / BLACK RAVEN</span>
-          <span class="field-card-corner">BR / 01</span>
-          <img src="assets/images/mala-gozdna-sola.webp" alt="Mala gozdna šola Black Raven Solutions" data-alt-sl="Mala gozdna šola Black Raven Solutions" data-alt-en="Black Raven Solutions Little Forest School" width="1080" height="1080" loading="eager" decoding="async">
-          <div class="field-card-footer"><span data-sl="Učenje zunaj." data-en="Learn outside.">Učenje zunaj.</span><span>BR / WA</span></div>
+        <div class="hero-glass-card">
+          <span class="hero-glass-kicker">BLACK RAVEN / WILDERNESS ACADEMY</span>
+          <strong data-sl="Znanje. Narava. Izkušnja." data-en="Skills. Nature. Experience.">Znanje. Narava. Izkušnja.</strong>
+          <p data-sl="Programi za posameznike, družine, mlade in ekipe." data-en="Programs for individuals, families, young people and teams.">Programi za posameznike, družine, mlade in ekipe.</p>
+          <a href="#programi" data-sl="Razišči programe" data-en="Explore programs">Razišči programe <span>↓</span></a>
         </div>
         <div class="hero-coordinates" aria-hidden="true"><span>OUTDOOR / FIELD</span><i></i><span>FIELD READY</span></div>
       </div>
