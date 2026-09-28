@@ -65,6 +65,13 @@
 
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
 
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const syncHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive: true });
+  }
+
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const targets = document.querySelectorAll('main > section:not(:first-child)');
     targets.forEach(el => el.classList.add('reveal'));
