@@ -2587,3 +2587,213 @@ button:focus-visible{
     display:none;
   }
 }
+
+/* --- Hero video layering fix v2 --- */
+.brand-hero{
+  position:relative !important;
+  overflow:hidden !important;
+  min-height:calc(100svh - 78px);
+  background:#102a1d;
+  isolation:isolate;
+}
+.hero-video{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  margin:0 !important;
+  padding:0 !important;
+  opacity:.58;
+  filter:saturate(.86) contrast(1.04) brightness(.66);
+  transform:scale(1.03);
+}
+.hero-video-overlay{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  background:
+    linear-gradient(90deg,rgba(8,24,16,.94) 0%,rgba(11,31,21,.82) 38%,rgba(20,49,35,.48) 67%,rgba(26,62,44,.30) 100%),
+    linear-gradient(to top,rgba(8,24,16,.66) 0%,rgba(8,24,16,.08) 48%,rgba(8,24,16,.20) 100%),
+    radial-gradient(circle at 75% 34%,rgba(143,176,143,.15),transparent 31%);
+}
+.brand-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  opacity:.13;
+  background:
+    radial-gradient(circle at 78% 40%,rgba(255,255,255,.08),transparent 22%),
+    linear-gradient(115deg,transparent 0 53%,rgba(255,255,255,.025) 53% 54%,transparent 54% 100%);
+}
+.brand-hero::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  z-index:1;
+  height:180px;
+  pointer-events:none;
+  background:linear-gradient(to top,rgba(7,22,15,.34),transparent);
+}
+.brand-hero-grid{
+  position:relative !important;
+  z-index:2 !important;
+  min-height:calc(100svh - 78px);
+  padding-top:clamp(4.5rem,7vw,7rem);
+  padding-bottom:clamp(4.5rem,7vw,6.5rem);
+  grid-template-columns:minmax(0,1.08fr) minmax(320px,.72fr);
+  align-items:center;
+}
+.brand-hero-copy{
+  max-width:760px;
+}
+.brand-hero h1{
+  max-width:8.7ch;
+  margin-bottom:1.15rem;
+  text-shadow:0 8px 36px rgba(0,0,0,.18);
+}
+.hero-intro{
+  max-width:47ch;
+  color:rgba(239,244,239,.82);
+}
+.hero-meta{
+  max-width:640px;
+}
+.hero-glass-zone{
+  min-height:470px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  position:relative;
+}
+.hero-glass-zone .hero-mark{
+  width:min(76%,380px);
+  top:5%;
+  right:2%;
+  opacity:.075;
+}
+.hero-glass-card{
+  position:relative;
+  z-index:2;
+  width:min(100%,390px);
+  margin:0 0 2.4rem auto;
+  padding:1.4rem 1.45rem 1.3rem;
+  border-radius:28px;
+  background:rgba(14,32,23,.46);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 28px 70px rgba(0,0,0,.18);
+  backdrop-filter:blur(18px) saturate(115%);
+  -webkit-backdrop-filter:blur(18px) saturate(115%);
+}
+.hero-glass-kicker{
+  display:block;
+  margin-bottom:1.1rem;
+  color:rgba(231,238,231,.68);
+  font-size:.62rem;
+  font-weight:700;
+  letter-spacing:.12em;
+}
+.hero-glass-card strong{
+  display:block;
+  margin-bottom:.65rem;
+  color:#fff;
+  font-family:"Newsreader",Georgia,serif;
+  font-size:clamp(1.85rem,3vw,2.65rem);
+  line-height:1.03;
+  font-weight:500;
+  letter-spacing:-.03em;
+}
+.hero-glass-card p{
+  margin:0 0 1rem;
+  color:rgba(233,240,233,.72);
+  font-size:.9rem;
+}
+.hero-glass-card a{
+  display:inline-flex;
+  align-items:center;
+  gap:.65rem;
+  color:#fff;
+  font-size:.78rem;
+  font-weight:700;
+}
+.hero-glass-card a span{
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  transition:transform .18s ease,background .18s ease;
+}
+.hero-glass-card a:hover span{
+  transform:translateY(3px);
+  background:rgba(255,255,255,.16);
+}
+.hero-coordinates{
+  right:0;
+  bottom:.4rem;
+}
+
+@media(max-width:980px){
+  .brand-hero-grid{
+    grid-template-columns:1fr;
+    min-height:auto;
+    padding-top:5rem;
+    padding-bottom:4rem;
+  }
+  .hero-glass-zone{
+    min-height:auto;
+    margin-top:1rem;
+    justify-content:flex-start;
+  }
+  .hero-glass-zone .hero-mark{
+    right:auto;
+    left:52%;
+    transform:translateX(-10%);
+  }
+  .hero-glass-card{
+    width:min(100%,520px);
+    margin:0;
+  }
+}
+@media(max-width:760px){
+  .brand-hero{
+    min-height:auto;
+  }
+  .hero-video{
+    object-position:58% center !important;
+    opacity:.50;
+    transform:scale(1.06);
+  }
+  .hero-video-overlay{
+    background:
+      linear-gradient(90deg,rgba(8,24,16,.94),rgba(13,38,26,.66)),
+      linear-gradient(to top,rgba(8,24,16,.72),rgba(8,24,16,.14));
+  }
+  .brand-hero-grid{
+    min-height:auto;
+    padding-top:4.2rem;
+  }
+  .hero-glass-card{
+    border-radius:22px;
+  }
+  .hero-coordinates{
+    display:none;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-video{
+    display:none !important;
+  }
+  .brand-hero{
+    background:
+      radial-gradient(circle at 78% 25%,rgba(117,148,122,.28),transparent 30%),
+      linear-gradient(145deg,#10251a,#214b36);
+  }
+}
