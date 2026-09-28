@@ -1375,3 +1375,19 @@ body::before{
   }
   .inner-hero{min-height:360px}
 }
+
+/* --- Micro reveal motion --- */
+.micro-reveal{
+  opacity:0;
+  transform:translateY(10px);
+  transition:
+    opacity .5s ease var(--stagger,0ms),
+    transform .55s cubic-bezier(.2,.7,.2,1) var(--stagger,0ms);
+}
+.micro-reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+@media(prefers-reduced-motion:reduce){
+  .micro-reveal{opacity:1;transform:none}
+}
