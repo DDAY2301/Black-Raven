@@ -20,12 +20,10 @@
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
-    const title = document.body.dataset.titleEn && safe === 'en' ? document.body.dataset.titleEn : document.body.dataset.titleSl;
+    const title = safe === 'en' ? document.body.dataset.titleEn : document.body.dataset.titleSl;
     if (title) document.title = title;
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.content = safe === 'en' ? document.body.dataset.descEn : document.body.dataset.descSl;
-    }
+    if (meta) meta.content = safe === 'en' ? document.body.dataset.descEn : document.body.dataset.descSl;
   };
 
   buttons.forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.lang)));
@@ -58,12 +56,26 @@
       lightbox.classList.add('is-open');
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      lightbox.querySelector('button').focus();
+      lightbox.querySelector('button')?.focus();
     }));
-    lightbox.querySelector('button').addEventListener('click', close);
+    lightbox.querySelector('button')?.addEventListener('click', close);
     lightbox.addEventListener('click', e => { if (e.target === lightbox) close(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   }
 
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const targets = document.querySelectorAll('main > section:not(:first-child)');
+    targets.forEach(el => el.classList.add('reveal'));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(el => observer.observe(el));
+  }
 })();
