@@ -3108,3 +3108,147 @@ button:focus-visible{
     text-align:left;
   }
 }
+
+
+/* --- Expanded weekend course details --- */
+.course-row-detailed{
+  align-items:start;
+}
+.course-main{
+  min-width:0;
+}
+.course-main>p{
+  max-width:72ch;
+}
+.course-details{
+  margin:1rem 0 1.1rem;
+  border:1px solid rgba(28,52,38,.10);
+  border-radius:18px;
+  background:rgba(255,255,255,.48);
+  overflow:hidden;
+}
+.course-details-dark{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.07);
+}
+.course-details summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  min-height:52px;
+  padding:.8rem 1rem;
+  cursor:pointer;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.03em;
+}
+.course-details summary::-webkit-details-marker{display:none}
+.course-details summary b{
+  display:grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:rgba(49,92,69,.10);
+  transition:transform .18s ease,background .18s ease;
+}
+.course-details-dark summary b{
+  background:rgba(255,255,255,.10);
+}
+.course-details[open] summary b{
+  transform:rotate(45deg);
+}
+.course-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px;
+  border-top:1px solid rgba(28,52,38,.08);
+  background:rgba(28,52,38,.08);
+}
+.course-details-dark .course-detail-grid{
+  border-top-color:rgba(255,255,255,.10);
+  background:rgba(255,255,255,.09);
+}
+.course-detail-grid article{
+  min-height:170px;
+  padding:1rem 1.05rem 1.1rem;
+  background:rgba(250,251,248,.96);
+}
+.course-details-dark .course-detail-grid article{
+  background:rgba(17,45,31,.72);
+}
+.course-detail-grid strong{
+  display:block;
+  margin-bottom:.45rem;
+  font-family:"Newsreader",Georgia,serif;
+  font-size:1.22rem;
+  font-weight:500;
+}
+.course-detail-grid p,
+.course-detail-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.62;
+}
+.course-details-dark .course-detail-grid p{
+  color:rgba(242,246,241,.72);
+}
+.course-detail-copy{
+  padding:0 1rem 1rem;
+}
+.advanced-topics{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.55rem;
+  padding:0 1rem 1rem;
+}
+.advanced-topics span{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:.45rem .72rem;
+  border-radius:999px;
+  background:#edf2eb;
+  color:#315c45;
+  font-size:.76rem;
+  line-height:1.25;
+}
+.course-skill-tags{
+  align-self:start;
+}
+.course-row-detailed .card-action{
+  margin-top:.25rem;
+}
+@media(max-width:820px){
+  .course-detail-grid{
+    grid-template-columns:1fr;
+  }
+  .course-detail-grid article{
+    min-height:auto;
+  }
+}
+@media(max-width:620px){
+  .course-details{
+    border-radius:15px;
+  }
+  .course-details summary{
+    padding:.75rem .85rem;
+  }
+  .course-detail-grid article,
+  .course-detail-copy{
+    padding-left:.85rem;
+    padding-right:.85rem;
+  }
+  .advanced-topics{
+    padding-left:.85rem;
+    padding-right:.85rem;
+  }
+  .advanced-topics span{
+    width:100%;
+    border-radius:12px;
+  }
+}
