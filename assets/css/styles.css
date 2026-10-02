@@ -3959,3 +3959,434 @@ button:focus-visible{
   .after-course-grid{grid-template-columns:1fr}
   .approach-grid article,.after-course-grid article{min-height:auto}
 }
+
+
+/* --- 2026-10-02 photo visibility + field guide visual rework --- */
+
+/* Animation is progressive enhancement: content stays visible if JS/observer fails. */
+.reveal,
+.micro-reveal{
+  opacity:1;
+  transform:none;
+}
+.motion-ready .reveal{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s ease,transform .55s ease;
+}
+.motion-ready .reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+.motion-ready .micro-reveal{
+  opacity:0;
+  transform:translateY(10px);
+  transition:
+    opacity .5s ease var(--stagger,0ms),
+    transform .55s cubic-bezier(.2,.7,.2,1) var(--stagger,0ms);
+}
+.motion-ready .micro-reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+
+/* Keep all photographic surfaces visible and stable on live Pages. */
+.section-visual,
+.gallery-hq-card,
+.proof-image,
+.community-visual,
+.info-hero-media,
+.info-photo-band figure,
+.field-guide-media,
+.family-flow-visual figure,
+.decade-card,
+.nature-story-pair figure{
+  background:
+    linear-gradient(135deg,#d9e1d6,#bfcbbf);
+  overflow:hidden;
+}
+.section-visual img,
+.gallery-hq-image img,
+.proof-image img,
+.community-visual img,
+.info-hero-media img,
+.info-photo-band img,
+.field-guide-media img,
+.family-flow-visual img,
+.decade-card img,
+.nature-story-pair img{
+  display:block;
+  width:100%;
+  max-width:none;
+  opacity:1!important;
+  visibility:visible!important;
+  object-fit:cover;
+  image-rendering:auto;
+  backface-visibility:hidden;
+}
+.image-failed{
+  background:
+    radial-gradient(circle at 75% 20%,rgba(196,106,67,.18),transparent 28%),
+    linear-gradient(135deg,#20392b,#0f2118)!important;
+}
+
+/* BEFORE YOU GO — stronger Black Raven field-guide treatment */
+.info-hero{
+  position:relative;
+  padding:0;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(71,112,84,.24),transparent 31%),
+    linear-gradient(135deg,#0b1710 0%,#10271a 58%,#173724 100%);
+}
+.info-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:linear-gradient(to bottom,#000,transparent 92%);
+}
+.info-hero-grid{
+  position:relative;
+  z-index:1;
+  min-height:650px;
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);
+  gap:clamp(2rem,5vw,5.5rem);
+  align-items:center;
+  padding-top:clamp(4rem,7vw,6.7rem);
+  padding-bottom:clamp(4rem,7vw,6.7rem);
+}
+.info-hero-copy{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+}
+.info-hero .eyebrow{
+  margin-bottom:1.2rem;
+  flex-direction:row;
+  align-items:center;
+  color:#c6d0c7;
+}
+.info-hero h1{
+  max-width:7.6ch;
+  font-size:clamp(4.2rem,7.7vw,8rem);
+  line-height:.88;
+  letter-spacing:-.055em;
+}
+.info-hero p{
+  max-width:52ch;
+  margin-top:1.5rem;
+  color:#c2cec5;
+  font-size:clamp(1rem,1.4vw,1.18rem);
+}
+.info-hero-actions{
+  display:flex;
+  gap:1rem;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:2rem;
+}
+.info-hero .text-link{color:#fff}
+.info-hero-media{
+  position:relative;
+  min-height:500px;
+  margin:0;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:34px;
+  box-shadow:0 34px 80px rgba(0,0,0,.32);
+  isolation:isolate;
+}
+.info-hero-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(to top,rgba(5,16,10,.62) 0%,rgba(5,16,10,.08) 45%,transparent 70%),
+    linear-gradient(120deg,rgba(10,31,20,.08),transparent 55%);
+  pointer-events:none;
+}
+.info-hero-media img{
+  position:absolute;
+  inset:0;
+  height:100%;
+  object-position:center 50%;
+}
+.info-hero-media figcaption,
+.info-photo-band figcaption,
+.field-guide-media figcaption,
+.family-flow-visual figcaption{
+  position:absolute;
+  z-index:2;
+  left:1.2rem;
+  right:1.2rem;
+  bottom:1.1rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:1rem;
+  color:#fff;
+}
+.info-hero-media figcaption span,
+.info-photo-band figcaption span,
+.field-guide-media figcaption span,
+.family-flow-visual figcaption span{
+  font-size:.66rem;
+  font-weight:800;
+  letter-spacing:.14em;
+}
+.info-hero-media figcaption strong,
+.info-photo-band figcaption strong,
+.field-guide-media figcaption strong,
+.family-flow-visual figcaption strong{
+  max-width:20ch;
+  text-align:right;
+  font-family:"Newsreader",Georgia,serif;
+  font-size:clamp(1.4rem,2.3vw,2.4rem);
+  line-height:1.02;
+  font-weight:500;
+}
+
+/* Gear area gets more field-guide hierarchy. */
+#oprema{
+  background:
+    radial-gradient(circle at 88% 12%,rgba(49,92,69,.08),transparent 25%),
+    #f5f4ee;
+}
+#oprema .section-head{
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--line);
+}
+.gear-season-grid{
+  gap:1.15rem;
+}
+.gear-season-card{
+  min-height:360px;
+  border-radius:26px;
+  box-shadow:0 18px 48px rgba(24,47,33,.06);
+}
+.gear-season-card::before{
+  content:"";
+  position:absolute;
+  width:52px;
+  height:3px;
+  top:1.4rem;
+  right:1.4rem;
+  background:var(--ember);
+  opacity:.78;
+}
+.gear-season-winter::before{background:#e3a07d}
+.gear-core{
+  margin-top:1.15rem;
+  border-radius:24px;
+  box-shadow:0 16px 42px rgba(24,47,33,.05);
+}
+.gear-chip-grid span{
+  border-radius:999px;
+  padding:.65rem .86rem;
+}
+
+/* Photo bridge between gear and field conditions. */
+.info-photo-band{
+  padding:clamp(1.2rem,2.6vw,2.2rem) 0 clamp(4rem,7vw,6rem);
+  background:#f5f4ee;
+}
+.info-photo-band-grid{
+  display:grid;
+  grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);
+  gap:1rem;
+  align-items:stretch;
+}
+.info-photo-band figure{
+  position:relative;
+  margin:0;
+  min-height:430px;
+  border-radius:28px;
+  box-shadow:0 24px 58px rgba(17,34,24,.10);
+  isolation:isolate;
+}
+.info-photo-band figure::after,
+.field-guide-media::after,
+.family-flow-visual figure::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(to top,rgba(6,18,11,.58),rgba(6,18,11,.05) 48%,transparent 68%);
+  pointer-events:none;
+}
+.info-photo-band img{
+  position:absolute;
+  inset:0;
+  height:100%;
+}
+.info-photo-large img{object-position:center 48%}
+.info-photo-wide img{object-position:center 50%}
+
+/* In-the-field section: photo + dense practical cards. */
+.field-guide-dark{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 14%,rgba(65,112,81,.18),transparent 27%),
+    linear-gradient(145deg,#0d1e14,#143022 68%,#193b29);
+}
+.field-guide-media{
+  position:relative;
+  min-height:440px;
+  margin:0 0 1rem;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,.10);
+  isolation:isolate;
+}
+.field-guide-media img{
+  position:absolute;
+  inset:0;
+  height:100%;
+  object-position:center 50%;
+}
+.field-guide-cards{
+  border-radius:24px;
+  overflow:hidden;
+}
+.field-guide-cards article{
+  background:rgba(17,47,32,.92);
+  backdrop-filter:blur(4px);
+}
+
+/* Family flow gets a photographic entry point. */
+.family-flow{
+  background:
+    radial-gradient(circle at 12% 12%,rgba(196,106,67,.08),transparent 24%),
+    #eeefe9;
+}
+.family-flow-visual{
+  margin-bottom:1rem;
+}
+.family-flow-visual figure{
+  position:relative;
+  margin:0;
+  min-height:390px;
+  border-radius:30px;
+  box-shadow:0 22px 52px rgba(17,34,24,.09);
+  isolation:isolate;
+}
+.family-flow-visual img{
+  position:absolute;
+  inset:0;
+  height:100%;
+  object-position:center 51%;
+}
+.family-flow-grid{
+  border-radius:24px;
+  overflow:hidden;
+}
+.family-flow-grid article{
+  background:rgba(250,251,247,.94);
+}
+
+/* After-course and attendance finish with stronger contrast. */
+.after-course-section{
+  background:
+    radial-gradient(circle at 85% 10%,rgba(49,92,69,.09),transparent 24%),
+    #e9eee6;
+}
+.after-course-grid{
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 18px 44px rgba(18,39,27,.06);
+}
+.attendance-section{
+  background:
+    radial-gradient(circle at 90% 20%,rgba(196,106,67,.09),transparent 22%),
+    linear-gradient(180deg,#f4f1e7,#ece9df);
+}
+
+/* Main-site photo polish; avoid washed-out/blurry appearance. */
+.section-visual{
+  border-radius:30px;
+  box-shadow:0 26px 64px rgba(18,39,27,.10);
+}
+.section-visual img,
+.gallery-hq-image img{
+  filter:none!important;
+  transform:none!important;
+}
+.section-visual:hover img,
+.gallery-hq-card:hover img{
+  transform:scale(1.012)!important;
+}
+#vikend-tecaji .section-visual-wide,
+#delavnice .section-visual-wide,
+.expedition-visual{
+  min-height:390px;
+}
+.proof-image{
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 24px 58px rgba(18,39,27,.10);
+}
+.proof-image img{
+  filter:none!important;
+}
+
+@media(max-width:980px){
+  .info-hero-grid{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+  .info-hero-media{
+    min-height:430px;
+  }
+  .info-photo-band-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+@media(max-width:760px){
+  .info-hero-grid{
+    padding-top:3.6rem;
+    padding-bottom:3.6rem;
+  }
+  .info-hero h1{
+    font-size:clamp(3.8rem,16vw,6rem);
+  }
+  .info-hero-media{
+    min-height:340px;
+    border-radius:24px;
+  }
+  .info-photo-band-grid{
+    grid-template-columns:1fr;
+  }
+  .info-photo-band figure,
+  .field-guide-media,
+  .family-flow-visual figure{
+    min-height:320px;
+    border-radius:22px;
+  }
+  .info-hero-media figcaption,
+  .info-photo-band figcaption,
+  .field-guide-media figcaption,
+  .family-flow-visual figcaption{
+    left:.9rem;
+    right:.9rem;
+    bottom:.85rem;
+  }
+  #vikend-tecaji .section-visual-wide,
+  #delavnice .section-visual-wide,
+  .expedition-visual{
+    min-height:0;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .motion-ready .reveal,
+  .motion-ready .micro-reveal{
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}
