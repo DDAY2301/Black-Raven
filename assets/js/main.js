@@ -65,6 +65,23 @@
 
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
 
+  // Keep image surfaces stable on slow or failed loads.
+  document.querySelectorAll('img').forEach(img => {
+    const frame = img.closest('.section-visual, .gallery-hq-card, .proof-image, .community-visual, .info-hero-media, .info-photo-band figure, .field-guide-media, .family-flow-visual figure, .decade-card, .nature-story-pair figure');
+    const markLoaded = () => {
+      img.classList.add('is-loaded');
+      frame?.classList.remove('image-failed');
+    };
+    const markFailed = () => {
+      frame?.classList.add('image-failed');
+    };
+    if (img.complete && img.naturalWidth > 0) markLoaded();
+    else {
+      img.addEventListener('load', markLoaded, { once: true });
+      img.addEventListener('error', markFailed, { once: true });
+    }
+  });
+
   // FAQ accordion
   document.querySelectorAll('.faq-question').forEach(button => {
     button.addEventListener('click', () => {
@@ -119,7 +136,8 @@
     window.addEventListener('scroll', syncHeader, { passive: true });
   }
 
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    root.classList.add('motion-ready');
     const targets = document.querySelectorAll('main > section:not(:first-child)');
     targets.forEach(el => el.classList.add('reveal'));
     const observer = new IntersectionObserver(entries => {
