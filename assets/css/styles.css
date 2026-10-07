@@ -4590,3 +4590,48 @@ button:focus-visible{
     min-height:0;
   }
 }
+
+
+/* === 2026-10-07 FINAL BRAND + SOURCE-ASSET PASS === */
+.brand-copy strong{
+  font-size:.78rem;
+  letter-spacing:.09em;
+  text-transform:none;
+  white-space:nowrap;
+}
+.footer-brand strong{
+  font-size:.74rem;
+  letter-spacing:.08em;
+  text-transform:none;
+  white-space:nowrap;
+}
+.community-visual-brand{
+  background:#0a0d0b;
+}
+.community-visual-brand img{
+  object-fit:contain!important;
+  object-position:center!important;
+  background:#0a0d0b;
+}
+.proof-image img{
+  object-fit:cover!important;
+  object-position:center!important;
+}
+.gallery-final-grid .gallery-hq-card:nth-child(2) img{
+  object-fit:contain!important;
+  background:#090c0a;
+}
+@media(max-width:760px){
+  .brand{gap:.62rem}
+  .brand img{width:36px;height:36px}
+  .brand-copy strong{
+    font-size:.70rem;
+    letter-spacing:.045em;
+  }
+  .footer-brand strong{
+    white-space:normal;
+  }
+}
+@media(max-width:390px){
+  .brand-copy strong{font-size:.66rem;letter-spacing:.025em}
+}
