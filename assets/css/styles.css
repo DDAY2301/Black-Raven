@@ -5077,3 +5077,26 @@ html{scroll-padding-top:98px}
  .pack-item{padding:5pt 0;font-size:10pt}
  body{background:#fff!important;color:#000!important}
 }
+
+/* Black Raven / video entry points and participant preparation */
+.video-home-teaser,.video-gallery-link{background:#e6e4d8;padding:clamp(3.2rem,6vw,6rem) 0}
+.video-home-grid{display:grid;grid-template-columns:1fr .78fr;gap:clamp(2rem,5vw,5rem);align-items:end}
+.video-home-grid h2{margin:.8rem 0 0;font-size:clamp(2.8rem,5.6vw,5.8rem);line-height:.96;letter-spacing:-.045em}
+.video-home-grid p{max-width:52ch}
+.video-home-grid .btn{margin-top:1rem}
+.programme-extra-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:.85rem;padding:.3rem 0;color:#ce7d54;font-weight:700;font-size:.83rem;border-bottom:1px solid currentColor}
+.programme-extra-link:hover{color:#efb38e}
+.participant-guide-section{background:#f4f2eb;padding:clamp(4rem,7vw,7rem) 0}
+.participant-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.participant-guide-grid article{background:#fff;border-radius:16px;padding:clamp(1.4rem,2.4vw,2.15rem);border:1px solid rgba(22,44,29,.1);min-width:0}
+.participant-guide-grid article>span{font-size:.74rem;font-weight:800;letter-spacing:.14em;color:#ad5d39}
+.participant-guide-grid h3{font-size:clamp(1.6rem,2.3vw,2.35rem);line-height:1.1;margin:1.2rem 0 .75rem}
+.participant-guide-grid p{margin:0;line-height:1.7}
+@media(max-width:920px){.participant-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.video-home-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.participant-guide-grid{grid-template-columns:1fr}}
+@media(min-width:941px) and (max-width:1160px){
+  .nav-links{position:absolute;top:74px;left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:0;padding:.8rem var(--gutter) 1rem;background:#09100c;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 22px 30px rgba(0,0,0,.2)}
+  .nav-links.is-open{display:flex}
+  .nav-links a{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .menu-button{display:block;border-radius:8px}
+}
