@@ -71,7 +71,7 @@
       if (navLinks.classList.contains('is-open') && !e.target.closest('.site-header')) setMenuOpen(false);
     });
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 940) setMenuOpen(false);
+      if (window.innerWidth > 1160) setMenuOpen(false);
     });
   }
 
