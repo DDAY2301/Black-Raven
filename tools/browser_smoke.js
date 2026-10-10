@@ -5,7 +5,7 @@
   const path = require('path');
   
   const base = 'http://127.0.0.1:8765/';
-  const pages = ['index.html', 'gallery.html', 'stories.html', 'info.html', 'zakaj-narava.html', 'o-nas.html'];
+  const pages = ['index.html', 'gallery.html', 'stories.html', 'info.html', 'zakaj-narava.html', 'o-nas.html', 'video.html', 'oprema.html'];
   const viewports = [
     { name: 'mobile', width: 375, height: 812 },
     { name: 'tablet', width: 768, height: 1024 },
