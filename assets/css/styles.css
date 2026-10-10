@@ -4904,3 +4904,22 @@ button:focus-visible{
   .course-row-photo img,
   .story-visual img{transition:none!important}
 }
+
+/* Black Raven — camp programme details (2026-10-10) */
+.camp-showcase{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.1rem,2.5vw,2rem);margin-top:clamp(2.5rem,5vw,5rem)}
+.camp-feature{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--paper);box-shadow:0 14px 36px rgba(13,23,18,.05);scroll-margin-top:105px}
+.camp-feature-photo{height:clamp(220px,23vw,330px);margin:0;overflow:hidden;background:var(--forest)}
+.camp-feature-photo img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .45s ease}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){.camp-feature:hover .camp-feature-photo img{transform:scale(1.025)}}
+.camp-feature-body{padding:clamp(1.35rem,2.6vw,2.4rem)}
+.camp-feature-kicker{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;color:var(--ember);font-size:.69rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.camp-feature h3{margin:1.05rem 0 .9rem;font-size:clamp(2.15rem,3.5vw,3.55rem);line-height:1.04;letter-spacing:-.045em}
+.camp-feature p{max-width:57ch;min-height:6.5em;margin:0;color:#4f5b51}
+.camp-feature-tags{display:flex;flex-wrap:wrap;gap:.45rem;padding:0;margin:1.4rem 0 1.6rem;list-style:none}
+.camp-feature-tags li{padding:.38rem .72rem;border:1px solid rgba(13,23,18,.16);border-radius:30px;font-size:.77rem;line-height:1.35;color:var(--forest)}
+.camp-feature-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);padding-top:1.2rem}
+.camp-feature-cta{display:inline-flex;align-items:center;gap:.7rem;font-weight:800;color:var(--forest)}
+.camp-feature-cta:hover,.camp-feature-secondary:hover{text-decoration:underline;text-underline-offset:4px}
+.camp-feature-secondary{font-size:.88rem;color:#576357}
+.camp-feature-actions a:focus-visible{outline:2px solid var(--ember);outline-offset:5px}
+@media(max-width:760px){.camp-showcase{grid-template-columns:1fr}.camp-feature-photo{height:clamp(215px,56vw,330px)}.camp-feature p{min-height:0}}
