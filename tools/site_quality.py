@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ("index.html", "gallery.html", "stories.html", "info.html", "zakaj-narava.html", "o-nas.html")
+PAGES = ("index.html", "gallery.html", "stories.html", "info.html", "zakaj-narava.html", "o-nas.html", "video.html", "oprema.html")
 EXTRA_PAGES = ("404.html",)
 BASE = "https://dday2301.github.io/Black-Raven/"
 errors: list[str] = []
