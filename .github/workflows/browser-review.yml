@@ -9,6 +9,9 @@ on:
       - ".github/workflows/browser-review.yml"
       - "tools/browser_smoke.js"
   workflow_dispatch:
+concurrency:
+  group: black-raven-browser-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
