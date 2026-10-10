@@ -48,11 +48,13 @@
         await page.locator('[data-lang="sl"]').click();
         if ((await page.locator('html').getAttribute('lang')) !== 'sl') issues.push(tag + ': Slovenian switch failed');
   
-        if (screen.width <= 980) {
+        if (await page.locator('.menu-button').isVisible()) {
           await page.locator('.menu-button').click();
           if ((await page.locator('.menu-button').getAttribute('aria-expanded')) !== 'true') issues.push(tag + ': mobile menu did not open');
           await page.keyboard.press('Escape');
           if ((await page.locator('.menu-button').getAttribute('aria-expanded')) !== 'false') issues.push(tag + ': mobile menu did not close on Escape');
+        } else if (!(await page.locator('.nav-links').isVisible())) {
+          issues.push(tag + ': neither navigation nor menu button is visible');
         }
   
         if (name === 'gallery.html') {
