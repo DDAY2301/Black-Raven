@@ -4,10 +4,18 @@
   const translatable = [...document.querySelectorAll('[data-sl][data-en]')];
   const altTranslatable = [...document.querySelectorAll('[data-alt-sl][data-alt-en]')];
 
+  const getSavedLanguage = () => {
+    try { return localStorage.getItem('br-language') || 'sl'; }
+    catch (_) { return 'sl'; }
+  };
+  const saveLanguage = (lang) => {
+    try { localStorage.setItem('br-language', lang); }
+    catch (_) { /* Private browsing or disabled storage must not break the page. */ }
+  };
   const applyLanguage = (lang) => {
     const safe = lang === 'en' ? 'en' : 'sl';
     root.lang = safe;
-    localStorage.setItem('br-language', safe);
+    saveLanguage(safe);
     translatable.forEach(el => {
       const value = el.dataset[safe];
       if (value !== undefined) el.innerHTML = value;
@@ -20,6 +28,18 @@
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
+    const menu = document.querySelector('.menu-button');
+    if (menu) menu.setAttribute('aria-label', safe === 'en'
+      ? (menu.getAttribute('aria-expanded') === 'true' ? 'Close menu' : 'Open menu')
+      : (menu.getAttribute('aria-expanded') === 'true' ? 'Zapri meni' : 'Odpri meni'));
+    const back = document.querySelector('.back-to-top');
+    if (back) back.setAttribute('aria-label', safe === 'en' ? 'Back to top' : 'Nazaj na vrh');
+    const dialog = document.querySelector('.lightbox');
+    if (dialog) {
+      dialog.setAttribute('aria-label', safe === 'en' ? 'Image preview' : 'Predogled fotografije');
+      const close = dialog.querySelector('button');
+      if (close) close.setAttribute('aria-label', safe === 'en' ? 'Close preview' : 'Zapri predogled');
+    }
     const title = safe === 'en' ? document.body.dataset.titleEn : document.body.dataset.titleSl;
     if (title) document.title = title;
     const meta = document.querySelector('meta[name="description"]');
@@ -27,40 +47,75 @@
   };
 
   buttons.forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.lang)));
-  applyLanguage(localStorage.getItem('br-language') || 'sl');
+  applyLanguage(getSavedLanguage());
 
   const menuBtn = document.querySelector('.menu-button');
   const navLinks = document.querySelector('.nav-links');
   if (menuBtn && navLinks) {
-    menuBtn.addEventListener('click', () => {
-      const open = navLinks.classList.toggle('is-open');
-      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const setMenuOpen = (open) => {
+      navLinks.classList.toggle('is-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuBtn.setAttribute('aria-label', root.lang === 'en'
+        ? (open ? 'Close menu' : 'Open menu')
+        : (open ? 'Zapri meni' : 'Odpri meni'));
+    };
+    menuBtn.addEventListener('click', () => setMenuOpen(!navLinks.classList.contains('is-open')));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenuOpen(false)));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && navLinks.classList.contains('is-open')) {
+        setMenuOpen(false);
+        menuBtn.focus();
+      }
     });
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      navLinks.classList.remove('is-open');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    }));
+    document.addEventListener('click', e => {
+      if (navLinks.classList.contains('is-open') && !e.target.closest('.site-header')) setMenuOpen(false);
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 980) setMenuOpen(false);
+    });
   }
 
   const lightbox = document.querySelector('.lightbox');
   if (lightbox) {
     const lbImg = lightbox.querySelector('img');
+    const closeButton = lightbox.querySelector('button');
+    const photos = [...document.querySelectorAll('[data-lightbox]')];
+    let previousFocus = null;
+    let activeIndex = 0;
+    const showImage = (index) => {
+      activeIndex = (index + photos.length) % photos.length;
+      const card = photos[activeIndex];
+      if (!card) return;
+      lbImg.src = card.dataset.lightbox;
+      lbImg.alt = card.querySelector('img')?.alt || '';
+      const caption = lightbox.querySelector('.lightbox-caption');
+      if (caption) caption.textContent = card.querySelector('.field-gallery-meta strong')?.textContent || lbImg.alt;
+    };
     const close = () => {
+      if (!lightbox.classList.contains('is-open')) return;
       lightbox.classList.remove('is-open');
       lightbox.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      lbImg.removeAttribute('src');
+      previousFocus?.focus();
     };
-    document.querySelectorAll('[data-lightbox]').forEach(btn => btn.addEventListener('click', () => {
-      lbImg.src = btn.dataset.lightbox;
-      lbImg.alt = btn.querySelector('img')?.alt || '';
+    photos.forEach((btn, index) => btn.addEventListener('click', () => {
+      previousFocus = btn;
+      showImage(index);
       lightbox.classList.add('is-open');
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      lightbox.querySelector('button')?.focus();
+      closeButton?.focus();
     }));
-    lightbox.querySelector('button')?.addEventListener('click', close);
+    closeButton?.addEventListener('click', close);
     lightbox.addEventListener('click', e => { if (e.target === lightbox) close(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('is-open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      if (e.key === 'ArrowRight' && photos.length > 1) { e.preventDefault(); showImage(activeIndex + 1); }
+      if (e.key === 'ArrowLeft' && photos.length > 1) { e.preventDefault(); showImage(activeIndex - 1); }
+      if (e.key === 'Tab') { e.preventDefault(); closeButton?.focus(); }
+    });
   }
 
   document.querySelectorAll('[data-year]').forEach(el => el.textContent = new Date().getFullYear());
@@ -115,7 +170,7 @@
   const backTop = document.createElement('button');
   backTop.className = 'back-to-top';
   backTop.type = 'button';
-  backTop.setAttribute('aria-label', 'Back to top');
+  backTop.setAttribute('aria-label', root.lang === 'en' ? 'Back to top' : 'Nazaj na vrh');
   backTop.innerHTML = '<span>↑</span>';
   document.body.appendChild(backTop);
 
@@ -127,7 +182,7 @@
   };
   syncProgress();
   window.addEventListener('scroll', syncProgress, { passive: true });
-  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
 
   const header = document.querySelector('.site-header');
   if (header) {
