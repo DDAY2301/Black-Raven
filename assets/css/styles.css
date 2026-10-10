@@ -5006,3 +5006,13 @@ html{scroll-padding-top:98px}
     overflow-wrap:break-word;
   }
 }
+
+/* Keep photographic hero visible for users who request reduced motion.
+   Motion preferences should remove animation, not static imagery. */
+@media(prefers-reduced-motion:reduce){
+  img.hero-photo{
+    display:block!important;
+    transform:none!important;
+    transition:none!important;
+  }
+}
