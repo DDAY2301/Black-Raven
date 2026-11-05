@@ -83,8 +83,12 @@
               }
             }
             if (await page.locator('.contact-form-jump, .contact-email-alternative').count()) issues.push(tag + ': duplicate contact CTAs remain');
-            const endPoint = await contact.getAttribute('action');
-            if (endPoint !== 'https://formsubmit.co/info@blackraven.solutions') issues.push(tag + ': wrong form target');
+            const endPoint = await contact.getAttribute('data-endpoint');
+            if (endPoint !== '') issues.push(tag + ': endpoint must be blank until verified');
+            if (await contact.getAttribute('action') !== null) issues.push(tag + ': old external form action still present');
+            if (!(await page.locator('.contact-form-submit').isDisabled())) issues.push(tag + ': form must be disabled when unconfigured');
+            if (!(await page.locator('#contact-form-status').isVisible())) issues.push(tag + ': offline notice not visible');
+            if (await page.locator('#contact-form-success').isVisible()) issues.push(tag + ': false success shown');
             const invalid = await contact.evaluate(el => !el.checkValidity());
             if (!invalid) issues.push(tag + ': empty required fields passed validation');
             await page.locator('#contact-name').fill('Browser Test');
@@ -123,6 +127,35 @@
       await page.close();
       await context.close();
     }
+    // Integration mock: no real third-party requests, no customer data sent.
+    const context = await browser.newContext({ viewport: { width: 900, height: 800 } });
+    const page = await context.newPage();
+    const mockEndpoint = 'https://formspree.io/f/mockbr98765';
+    let accepted = 0;
+    await page.route('**/o-nas.html', async route => {
+      const response = await route.fetch();
+      const html = (await response.text()).replace('data-endpoint=""', 'data-endpoint="' + mockEndpoint + '"');
+      await route.fulfill({ response, body: html });
+    });
+    await page.route(mockEndpoint, async route => {
+      accepted += 1;
+      await route.fulfill({
+        status: 200,
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify({ ok: true })
+      });
+    });
+    await page.goto(base + 'o-nas.html', { waitUntil: 'load' });
+    if (await page.locator('.contact-form-submit').isDisabled()) issues.push('contact AJAX mock: valid endpoint stayed disabled');
+    await page.locator('#contact-name').fill('Browser Test');
+    await page.locator('#contact-email').fill('visitor@example.org');
+    await page.locator('#contact-message').fill('Safe mocked test message only');
+    await page.locator('.contact-form-submit').click();
+    try { await page.locator('#contact-form-success').waitFor({ state: 'visible', timeout: 5000 }); }
+    catch (_) { issues.push('contact AJAX mock: no success after accepted response'); }
+    if (accepted !== 1) issues.push('contact AJAX mock: request count ' + accepted);
+    if (!page.url().startsWith(base + 'o-nas.html')) issues.push('contact AJAX mock: redirected away from site');
+    await context.close();
   } finally {
     await browser.close();
   }
