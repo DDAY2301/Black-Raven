@@ -1,8 +1,41 @@
-/* Pre-fill enquiry context and show a return notice after FormSubmit redirects back. */
+/* Black Raven contact form: secure, same-page submission; fail closed until configured. */
 (() => {
   const form = document.getElementById('contact-enquiry-form');
-  const notice = document.getElementById('contact-form-success');
-  if (!form || !notice) return;
+  const status = document.getElementById('contact-form-status');
+  const success = document.getElementById('contact-form-success');
+  const submitButton = form?.querySelector('button[type="submit"]');
+  if (!form || !status || !success || !submitButton) return;
+
+  const message = {
+    offline: {
+      sl: 'Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions.',
+      en: 'Online form sending is temporarily unavailable. Please email info@blackraven.solutions instead.'
+    },
+    sending: { sl: 'Pošiljam povpraševanje …', en: 'Sending your enquiry …' },
+    failed: {
+      sl: 'Pošiljanje ni uspelo. Preveri povezavo in poskusi ponovno ali piši neposredno na e-pošto.',
+      en: 'Sending failed. Check your connection and retry, or contact us by email.'
+    },
+    limit: {
+      sl: 'Preveč poskusov. Poskusi ponovno čez nekaj minut.',
+      en: 'Too many attempts. Please try again in a few minutes.'
+    }
+  };
+
+  const setStatus = (key, hide = false) => {
+    const { sl, en } = message[key];
+    status.dataset.sl = sl;
+    status.dataset.en = en;
+    status.textContent = document.documentElement.lang === 'en' ? en : sl;
+    status.hidden = hide;
+  };
+
+  // Form ID must be created in the owner-controlled Formspree account.
+  // Do not insert a made-up ID or submit to an unverified external destination.
+  const endpoint = (form.dataset.endpoint || '').trim();
+  const configured = /^https:\/\/formspree\.io\/f\/[A-Za-z0-9]{6,40}$/.test(endpoint);
+  submitButton.disabled = !configured;
+  setStatus('offline', configured);
 
   const url = new URL(window.location.href);
   const topic = (url.searchParams.get('topic') || '').trim().slice(0, 160);
@@ -11,7 +44,7 @@
     const topicDisplay = document.getElementById('contact-form-topic-display');
     const topicLabel = document.getElementById('contact-topic-label');
     if (topicField) topicField.value = topic;
-    if (topicLabel) topicLabel.textContent = topic; // Text only, never inject HTML from the URL.
+    if (topicLabel) topicLabel.textContent = topic;
     if (topicDisplay) topicDisplay.hidden = false;
 
     const programme = document.getElementById('contact-programme');
@@ -26,13 +59,55 @@
     if (programme && chosen) programme.value = chosen[1];
   }
 
-  if (url.searchParams.get('enquiry') !== 'sent') return;
-  notice.hidden = false;
-  notice.focus({ preventScroll: true });
-  url.searchParams.delete('enquiry');
-  try {
-    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
-  } catch (_) {
-    /* History updates can be unavailable; the notice still works. */
-  }
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault(); // Never navigate to a third-party form website.
+    success.hidden = true;
+    if (!configured) {
+      setStatus('offline');
+      return;
+    }
+    if (!form.reportValidity()) return;
+    if ((form.elements.namedItem('_gotcha')?.value || '').trim()) return;
+
+    submitButton.disabled = true;
+    submitButton.setAttribute('aria-busy', 'true');
+    setStatus('sending');
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 20000);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+        mode: 'cors',
+        credentials: 'omit',
+        redirect: 'error',
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+
+      if (response.status === 429) {
+        setStatus('limit');
+        return;
+      }
+      if (!response.ok) {
+        setStatus('failed');
+        return;
+      }
+
+      // A successful HTTP status means the form service accepted the request;
+      // only the mailbox owner can confirm final email delivery.
+      status.hidden = true;
+      form.reset();
+      success.hidden = false;
+      success.focus({ preventScroll: true });
+    } catch (_) {
+      setStatus('failed');
+    } finally {
+      window.clearTimeout(timeout);
+      submitButton.disabled = false;
+      submitButton.removeAttribute('aria-busy');
+    }
+  });
 })();
