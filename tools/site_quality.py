@@ -153,7 +153,7 @@ else:
     if 'https://formsubmit.co' in contact_source:
         add_error("o-nas.html: blocked old form processor remains")
     js_text = (ROOT / "assets/js/contact-form.js").read_text(encoding="utf-8")
-    if 'formspree.io' not in js_text or 'event.preventDefault()' not in js_text:
+    if 'formspree' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
         add_error("contact-form.js: secure asynchronous submission missing")
     if 'enquiry' in js_text and "enquiry') === 'sent'" in js_text:
         add_error("contact-form.js: query-based fake success still present")
