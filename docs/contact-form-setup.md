@@ -1,34 +1,34 @@
-# Varna dostava povpraševanj Black Raven — aktivacija
+# Black Raven — neposredno pošiljanje prek GoDaddy SMTP
 
-## Zakaj je bil FormSubmit odstranjen
+Obiskovalec izpolni obrazec na GitHub Pages. Ob kliku Pošlji pošlje JavaScript HTTPS zahtevo do lastnikovega strežnika; strežnik prek poslovnega SMTP posreduje navadno e-pošto na info@blackraven.solutions. Ni FormSubmit, Formspree ali odpiranja e-poštnega programa.
 
-Varnostni dodatek v uporabnikovem brskalniku je pri prehodu na `formsubmit.co` prikazal opozorilo o domnevnem phishingu. Opozorila **ne obidemo**. Stari direktni POST in samodejna preusmeritev na FormSubmit sta v celoti odstranjena.
+## Stanje
 
-## Novi način
+Obrazec je pripravljen, vendar je namenoma NEAKTIVEN, dokler lastnikov strežnik ni nameščen in preverjen. GitHub Pages sam ne izvaja Node/PHP backend kode. Dokler ni strežnika in SMTP poverilnic, neposredno pošiljanje ni mogoče.
 
-- Na strani `o-nas.html` ostane dvojezični obrazec in povezave z vseh programov.
-- JavaScript odda podatke z `fetch` prek HTTPS na preverjen Formspree form-ID endpoint; obiskovalec ne zapusti strani.
-- Vgrajeni so: HTML validacija, honeypot `_gotcha`, zaščita pred dvojnim klikom, časovna omejitev, obravnava napak / statusa 429 in povratna informacija uporabniku.
-- Podatki se **ne pošljejo**, če form-ID ni nastavljen, endpoint ni dovoljen ali če pride do napake povezave.
-- Sporočilo o uspehu pomeni samo, da je strežnik sprejel oddajo; lastnik mora posebej preizkusiti prejem e-pošte.
+## Strežniška konfiguracija
 
-## Enkratna aktivacija
+- Spletna stran: GitHub Pages (dday2301.github.io/Black-Raven/ ali blackraven.solutions).
+- Predviden lastni HTTPS API: https://api.blackraven.solutions/contact.
+- Backend: backend/server.js, Node.js 20+, Nodemailer.
+- GoDaddy Professional Email powered by Titan: smtpout.secureserver.net, vrata 465, SSL/TLS, prijava z e-poštnim naslovom in geslom. Predhodno preveri dejanski tip računa.
+- Prejemnik: fiksno info@blackraven.solutions; obiskovalčev naslov je Reply-To.
 
-1. Uredi GoDaddy MX in testiraj, da `info@blackraven.solutions` sprejema navadna e-poštna sporočila.
-2. Odpri **https://formspree.io/register**. Račun naj bo v lasti Black Raven Solutions. Uporabi brezplačni paket (po ceniku novembra 2026 do 50 oddaj na mesec).
-3. V Formspree ustvarite formo **Black Raven – Contact**, kot *Target Email* nastavite `info@blackraven.solutions`. Če predal še ni delujoč, počakajte z aktivacijo.
-4. V nastavitvah Formspree omogoči **Restrict to Domain**, vpiši pravi produkcijski domeni oziroma izvor (npr. `blackraven.solutions` ali `dday2301.github.io` odvisno, kje je stran dejansko objavljena). Omogoči spam zaščito.
-5. Kopiraj endpoint v obliki `https://formspree.io/f/XXXXXXXX` (samo pravi ustvarjeni ID; brez e-poštnega naslova v URL-ju).
-6. V `o-nas.html` nastavi **`data-endpoint="https://formspree.io/f/XXXXXXXX"`** na obrazcu `#contact-enquiry-form`. Ne spreminjaj direktno kode JS. Po tej spremembi je gumb lahko aktiviran.
-7. Testiraj s testnimi podatki: uspeh, zavrnitev, izpad omrežja, mobilni/namizni prikaz ter dejanski prejem v poštnem predalu. Če e-pošta ne prispe, preglej Formspree Inbox in DNS.
-8. Pred javno uporabo pregledaš pogoje obdelave osebnih podatkov in pravne obveznosti (GDPR, možen prenos podatkov v ZDA). Zagotovi ustrezno obvestilo o zasebnosti in hrambo. **Ne zbiraj zdravstvenih ali drugih občutljivih podatkov.**
+## Aktivacija po korakih
 
-## Če endpoint še ni vzpostavljen
+1. Zagotovi spletno gostovanje, ki lahko neprekinjeno izvaja Node.js (npr. obstoječi VPS). Nakup domene in e-poštnega predala še ne pomeni, da imaš strežnik za Node. GoDaddy shared hosting lahko potrebuje drugačno implementacijo.
+2. Preveri, da info@blackraven.solutions DEJANSKO sprejema testno pošto; najprej uredi MX/DKIM/SPF.
+3. Na lastni strežnik namesti mapo backend in tam izvedi npm install --omit=dev.
+4. V zasebne okoljske spremenljivke vnesi SMTP_USER, SMTP_PASS, SMTP_HOST, SMTP_PORT, SITE_ORIGINS. Primer je v backend/.env.example. Gesel nikoli ne vnesi v javno kodo, GitHub ali pogovor.
+5. Zaženi node server.js kot storitev pod neprivilegiranim sistemskim uporabnikom. Aplikacija privzeto posluša samo na 127.0.0.1:3000.
+6. V GoDaddy DNS dodaj A zapis za subdomeno api na IP strežnika. Obstoječih A zapisov za spletno stran ne spreminjaj.
+7. Na strežniku nastavi HTTPS reverse proxy (Caddy/Nginx) do 127.0.0.1:3000. Predloga: backend/Caddyfile.example. Za omejitve po IP mora proxy povoziti glavo X-Real-IP.
+8. Preveri HTTPS GET https://api.blackraven.solutions/health in zahtevane CORS origin-e.
+9. ŠELE po uspešnem preverjanju v o-nas.html nastavi data-endpoint="https://api.blackraven.solutions/contact" namesto praznega data-endpoint. Ta URL ne obstaja sam od sebe.
+10. Testiraj oddajo iz spletnega obrazca z nenevarnimi podatki in dejansko preveri prejem v predalu, tudi Reply-To, mobilni prikaz, napake in omejitve.
 
-`data-endpoint=""` pomeni **varno neaktiven obrazec**. Gumb je onemogočen in obiskovalec vidi pošteno pojasnilo z nadomestnim e-poštnim naslovom. Podatkov **ne pošiljamo** nikamor.
+## Varnost in omejitve
 
-## Brez skrivnih ključev v javnem repozitoriju
+Poštno geslo je samo na lastnikovem strežniku. HTTPS ščiti prenos do API, SMTP/TLS prenos do poštnega strežnika. Backend uporablja fiksnega pošiljatelja in prejemnika, validacijo, honeypot, omejitev velikosti, CORS in omejevanje zahtev. CORS ni zaščita pred boti: za produkcijo je potrebno tudi omejevanje na ravni reverse proxyja. Uspešen HTTP 202 pomeni, da je SMTP zahtevo sprejel; končno dostavo mora lastnik potrditi v Inboxu. Pred javnim zagonom je potrebna še GDPR in pravna presoja obdelave osebnih podatkov.
 
-Formspree form-ID je namenjen javni uporabi v statični strani, ni SMTP geslo. V javno kodo nikoli ne dodajaj Gmail / GoDaddy gesel, Resend API ključev ali drugih zasebnih poverilnic.
-
-Viri: https://help.formspree.io/articles/building-your-form/submit-forms-with-javascript-ajax , https://help.formspree.io/articles/building-your-form/honeypot-spam-filtering , https://formspree.io/legal/privacy-policy/ .
+Povezavi: https://www.godaddy.com/help/set-up-third-party-plugins-or-websites-using-smtp-settings-42788 ; https://docs.github.com/pages/getting-started-with-github-pages/creating-a-github-pages-site
