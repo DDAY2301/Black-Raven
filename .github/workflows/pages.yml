@@ -22,9 +22,15 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Stage only public website files
+        run: |
+          mkdir -p public
+          cp -- *.html *.xml *.txt favicon.png favicon.svg .nojekyll public/
+          if [ -f CNAME ]; then cp CNAME public/; fi
+          cp -R assets public/assets
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
