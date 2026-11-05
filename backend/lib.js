@@ -8,7 +8,7 @@ export function validateEnquiry(data) {
   }
   const { name, email, programme, topic, message } = strings;
   if (strings._gotcha) return { spam: true };
-  if (name.length < 2 || name.length > 120) return { error: 'Invalid name' };
+  if (name.length < 2 || name.length > 120 || /[\r\n]/.test(name)) return { error: 'Invalid name' };
   if (email.length < 5 || email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) return { error: 'Invalid email' };
   if (message.length < 10 || message.length > 5000) return { error: 'Invalid message' };
   if (programme.length > 80 || topic.length > 160) return { error: 'Invalid optional fields' };
