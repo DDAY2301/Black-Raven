@@ -130,12 +130,12 @@ form_start = re.search(r'<form\b[^>]*\bid="contact-enquiry-form"[^>]*>', contact
 if not form_start:
     add_error("o-nas.html: missing contact enquiry form")
 else:
-    if 'action="https://formsubmit.co/info@blackraven.solutions"' not in form_start.group():
-        add_error("o-nas.html: unexpected contact form destination")
+    if 'action=' in form_start.group() or 'data-endpoint=""' not in form_start.group():
+        add_error("o-nas.html: contact endpoint must be blank until activation")
     if 'method="POST"' not in form_start.group():
         add_error("o-nas.html: contact form must use POST")
     form_content = contact_source[form_start.end():].split("</form>", 1)[0]
-    for field_name in ('name', 'email', 'message', '_honey', '_subject', '_next', 'topic'):
+    for field_name in ('name', 'email', 'message', '_gotcha', '_subject', 'topic'):
         if f'name="{field_name}"' not in form_content:
             add_error(f"o-nas.html: missing contact field {field_name}")
     for field_id in ('contact-name', 'contact-email', 'contact-message'):
@@ -144,6 +144,21 @@ else:
     for file in ('assets/css/contact-form.css', 'assets/js/contact-form.js'):
         if not (ROOT / file).is_file():
             add_error(f"Missing contact-form asset: {file}")
+    if 'id="contact-form-status"' not in contact_source:
+        add_error("o-nas.html: no failure/offline status region")
+    if '<button class="contact-form-submit" type="submit" disabled>' not in contact_source:
+        add_error("o-nas.html: submission should fail closed before configuration")
+    if 'https://formspree.io/legal/privacy-policy/' not in contact_source:
+        add_error("o-nas.html: form processor privacy URL missing")
+    if 'https://formsubmit.co' in contact_source:
+        add_error("o-nas.html: blocked old form processor remains")
+    js_text = (ROOT / "assets/js/contact-form.js").read_text(encoding="utf-8")
+    if 'formspree' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
+        add_error("contact-form.js: secure asynchronous submission missing")
+    if 'enquiry' in js_text and "enquiry') === 'sent'" in js_text:
+        add_error("contact-form.js: query-based fake success still present")
+    if 'formsubmit.co' in js_text:
+        add_error("contact-form.js: old form processor present")
 
 
 # The primary enquiry CTAs must not trigger the visitor's email client.
