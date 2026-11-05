@@ -21,9 +21,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-mail-v2">
-  <link rel="stylesheet" href="assets/css/contact-form.css?v=20261105-layout-v2">
+  <link rel="stylesheet" href="assets/css/contact-form.css?v=20261105-secure-v3">
   <script defer src="assets/js/main.js?v=20261010-ultimate-v5"></script>
-  <script defer src="assets/js/contact-form.js?v=20261105"></script>
+  <script defer src="assets/js/contact-form.js?v=20261105-secure-v3"></script>
 </head>
 <body class="inner-page about-page"
   data-title-sl="O nas in kontakt — Black Raven Solutions"
@@ -98,17 +98,15 @@
             <h3 id="contact-form-heading" data-sl="Piši nam neposredno." data-en="Send us a message.">Piši nam neposredno.</h3>
             <p data-sl="Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa." data-en="Send an enquiry without opening your email app.">Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa.</p>
           </div>
-          <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Povpraševanje je bilo oddano v obdelavo." data-en="Thank you! Your enquiry has been submitted for processing.">Hvala! Povpraševanje je bilo oddano v obdelavo.</p>
+          <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo." data-en="Thank you! Your enquiry was accepted for processing.">Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo.</p>
+          <p id="contact-form-status" class="contact-form-status" role="status" aria-live="polite" data-sl="Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions." data-en="Online form sending is temporarily unavailable. Please email info@blackraven.solutions instead.">Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions.</p>
           <p class="contact-form-topic" id="contact-form-topic-display" hidden><strong data-sl="Tema:" data-en="Topic:">Tema:</strong> <span id="contact-topic-label"></span></p>
-          <form id="contact-enquiry-form" class="contact-form" action="https://formsubmit.co/info@blackraven.solutions" method="POST">
+          <form id="contact-enquiry-form" class="contact-form" method="POST" data-endpoint="" aria-describedby="contact-form-status">
             <input type="hidden" name="_subject" value="Novo povpraševanje - Black Raven Solutions">
             <input type="hidden" id="contact-topic" name="topic" value="">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_url" value="https://dday2301.github.io/Black-Raven/o-nas.html">
-            <input type="hidden" name="_next" value="https://dday2301.github.io/Black-Raven/o-nas.html?enquiry=sent#kontakt">
             <div class="contact-form-honeypot" aria-hidden="true">
               <label for="contact-website">Website</label>
-              <input id="contact-website" type="text" name="_honey" tabindex="-1" autocomplete="off">
+              <input id="contact-website" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
             </div>
             <div class="contact-form-row">
               <div class="contact-form-field">
@@ -137,10 +135,10 @@
               <textarea id="contact-message" name="message" rows="5" minlength="10" maxlength="5000" required></textarea>
             </div>
             <p class="contact-form-privacy">
-              <span data-sl="Podatke uporabimo za odgovor na povpraševanje. Sporočilo obdeluje zunanja storitev FormSubmit. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov." data-en="We use these details to respond to your enquiry. Messages are processed by the external service FormSubmit. Do not send sensitive personal or medical details.">Podatke uporabimo za odgovor na povpraševanje. Sporočilo obdeluje zunanja storitev FormSubmit. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov.</span>
-              <a href="https://formsubmit.co/privacy.pdf" target="_blank" rel="noopener noreferrer" data-sl="Politika zasebnosti storitve" data-en="Service privacy policy">Politika zasebnosti storitve</a>
+              <span data-sl="Podatke uporabimo za odgovor na povpraševanje. Ob aktivaciji obrazec obdeluje storitev Formspree. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov." data-en="We use these details to reply to your enquiry. Once activated, submissions are processed by Formspree. Do not send sensitive personal or medical details.">Podatke uporabimo za odgovor na povpraševanje. Ob aktivaciji obrazec obdeluje storitev Formspree. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov.</span>
+              <a href="https://formspree.io/security/" target="_blank" rel="noopener noreferrer" data-sl="Politika zasebnosti storitve" data-en="Service privacy policy">Politika zasebnosti storitve</a>
             </p>
-            <button class="contact-form-submit" type="submit">
+            <button class="contact-form-submit" type="submit" disabled>
               <span data-sl="Pošlji povpraševanje" data-en="Send enquiry">Pošlji povpraševanje</span>
               <span aria-hidden="true">↗</span>
             </button>
