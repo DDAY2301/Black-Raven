@@ -29,6 +29,16 @@ const transport = nodemailer.createTransport({
 
 const ipCounters = new Map();
 const globalCounters = [];
+function clientAddress(req) {
+  const peer = req.socket.remoteAddress || 'unknown';
+  const isLocalProxy = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(peer);
+  if (isLocalProxy && process.env.TRUST_LOCAL_PROXY === '1') {
+    const forwarded = req.headers['x-real-ip'];
+    // The reverse proxy must overwrite X-Real-IP, never pass the visitor's header.
+    if (typeof forwarded === 'string' && /^[a-fA-F0-9:.]{3,45}$/.test(forwarded)) return forwarded;
+  }
+  return peer;
+}
 function withinRateLimit(ip) {
   const now = Date.now();
   const recent = (ipCounters.get(ip) || []).filter(t => t > now - 600000);
@@ -102,7 +112,7 @@ http.createServer(async (req, res) => {
   }
   // A real reverse proxy should enforce IP throttling and bot protection too.
   // Do not trust client-supplied X-Forwarded-For on an untrusted network.
-  if (!withinRateLimit(req.socket.remoteAddress || 'unknown')) {
+  if (!withinRateLimit(clientAddress(req))) {
     return respond(res, 429, { error: 'Too many requests' }, origin);
   }
 
