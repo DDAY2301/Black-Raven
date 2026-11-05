@@ -135,7 +135,7 @@ else:
     if 'method="POST"' not in form_start.group():
         add_error("o-nas.html: contact form must use POST")
     form_content = contact_source[form_start.end():].split("</form>", 1)[0]
-    for field_name in ('name', 'email', 'message', '_honey', '_subject', '_next'):
+    for field_name in ('name', 'email', 'message', '_honey', '_subject', '_next', 'topic'):
         if f'name="{field_name}"' not in form_content:
             add_error(f"o-nas.html: missing contact field {field_name}")
     for field_id in ('contact-name', 'contact-email', 'contact-message'):
@@ -144,6 +144,17 @@ else:
     for file in ('assets/css/contact-form.css', 'assets/js/contact-form.js'):
         if not (ROOT / file).is_file():
             add_error(f"Missing contact-form asset: {file}")
+
+
+# The primary enquiry CTAs must not trigger the visitor's email client.
+for page_name in ('index.html', 'info.html', 'oprema.html', 'stories.html'):
+    page_source = (ROOT / page_name).read_text(encoding='utf-8')
+    if 'mailto:info@blackraven.solutions' in page_source:
+        add_error(f"{page_name}: old mailto CTA still present")
+    if 'o-nas.html' not in page_source or '#contact-enquiry-form' not in page_source:
+        add_error(f"{page_name}: contact form CTA is missing")
+if 'contact-email-alternative' not in contact_source:
+    add_error('o-nas.html: explicit mailto fallback is missing')
 
 xml_path = ROOT / "sitemap.xml"
 if xml_path.is_file():
