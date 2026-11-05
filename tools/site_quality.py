@@ -148,13 +148,21 @@ else:
         add_error("o-nas.html: no failure/offline status region")
     if '<button class="contact-form-submit" type="submit" disabled>' not in contact_source:
         add_error("o-nas.html: submission should fail closed before configuration")
-    if 'https://formspree.io/legal/privacy-policy/' not in contact_source:
-        add_error("o-nas.html: form processor privacy URL missing")
+    if 'formspree.io' in contact_source or 'formsubmit.co' in contact_source:
+        add_error("o-nas.html: third-party form provider still present")
     if 'https://formsubmit.co' in contact_source:
         add_error("o-nas.html: blocked old form processor remains")
     js_text = (ROOT / "assets/js/contact-form.js").read_text(encoding="utf-8")
-    if 'formspree' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
-        add_error("contact-form.js: secure asynchronous submission missing")
+    if 'api.blackraven.solutions/contact' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
+        add_error("contact-form.js: first-party asynchronous submission missing")
+    if 'formspree' in js_text or 'formsubmit.co' in js_text:
+        add_error("contact-form.js: external form processor still referenced")
+    for path in ('backend/server.js', 'backend/lib.js', 'backend/package.json', 'backend/tests/validation.test.js'):
+        if not (ROOT / path).is_file():
+            add_error(f"Missing direct SMTP backend file: {path}")
+    backend_text = (ROOT / 'backend/server.js').read_text(encoding="utf-8")
+    if 'smtpout.secureserver.net' not in backend_text or 'info@blackraven.solutions' not in backend_text:
+        add_error("backend: unexpected outbound SMTP configuration")
     if 'enquiry' in js_text and "enquiry') === 'sent'" in js_text:
         add_error("contact-form.js: query-based fake success still present")
     if 'formsubmit.co' in js_text:
