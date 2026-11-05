@@ -62,6 +62,27 @@
           const contact = page.locator('#contact-enquiry-form');
           if (await contact.count() !== 1) issues.push(tag + ': missing contact form');
           else {
+            const card = page.locator('.contact-form-card');
+            const email = page.locator('.contact-direct-email');
+            if (await email.count() !== 1) issues.push(tag + ': missing clean email footer');
+            else {
+              const geometry = await page.evaluate(() => {
+                const card = document.querySelector('.contact-form-card')?.getBoundingClientRect();
+                const email = document.querySelector('.contact-direct-email')?.getBoundingClientRect();
+                const address = document.querySelector('.contact-direct-address')?.getBoundingClientRect();
+                const column = document.querySelector('.about-contact-grid > div')?.getBoundingClientRect();
+                return card && email && address && column
+                  ? { cardBottom: card.bottom, emailTop: email.top, emailRight: email.right,
+                      addressRight: address.right, columnRight: column.right, emailWidth: email.width }
+                  : null;
+              });
+              if (!geometry || geometry.emailTop < geometry.cardBottom + 10 ||
+                  geometry.addressRight > geometry.columnRight + 2 ||
+                  geometry.emailRight > geometry.columnRight + 2) {
+                issues.push(tag + ': contact details overflow or overlap the form');
+              }
+            }
+            if (await page.locator('.contact-form-jump, .contact-email-alternative').count()) issues.push(tag + ': duplicate contact CTAs remain');
             const endPoint = await contact.getAttribute('action');
             if (endPoint !== 'https://formsubmit.co/info@blackraven.solutions') issues.push(tag + ': wrong form target');
             const invalid = await contact.evaluate(el => !el.checkValidity());
