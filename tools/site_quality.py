@@ -153,8 +153,12 @@ for page_name in ('index.html', 'info.html', 'oprema.html', 'stories.html'):
         add_error(f"{page_name}: old mailto CTA still present")
     if 'o-nas.html' not in page_source or '#contact-enquiry-form' not in page_source:
         add_error(f"{page_name}: contact form CTA is missing")
-if 'contact-email-alternative' not in contact_source:
-    add_error('o-nas.html: explicit mailto fallback is missing')
+if 'contact-direct-email' not in contact_source or 'contact-direct-address' not in contact_source:
+    add_error('o-nas.html: clean direct email footer missing')
+if 'contact-email-alternative' in contact_source or 'contact-form-jump' in contact_source:
+    add_error('o-nas.html: duplicated contact CTA still present')
+if 'mailto:info@blackraven.solutions' in contact_source:
+    add_error('o-nas.html: mail client shortcut should not crowd primary form')
 
 xml_path = ROOT / "sitemap.xml"
 if xml_path.is_file():
