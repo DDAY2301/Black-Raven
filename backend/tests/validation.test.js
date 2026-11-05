@@ -13,6 +13,7 @@ test('accept valid enquiry and format text', () => {
 test('reject missing or fake addresses', () => {
   assert.ok(validateEnquiry({ ...good, email: 'not-an-email' }).error);
   assert.ok(validateEnquiry({ ...good, name: '' }).error);
+  assert.ok(validateEnquiry({ ...good, name: 'Visitor\r\nInjected: header' }).error);
   assert.ok(validateEnquiry({ ...good, message: 'Hi' }).error);
 });
 test('honeypot drops spam', () => {
