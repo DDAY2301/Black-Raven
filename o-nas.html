@@ -21,7 +21,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-mail-v2">
+  <link rel="stylesheet" href="assets/css/contact-form.css?v=20261105">
   <script defer src="assets/js/main.js?v=20261010-ultimate-v5"></script>
+  <script defer src="assets/js/contact-form.js?v=20261105"></script>
 </head>
 <body class="inner-page about-page"
   data-title-sl="O nas in kontakt — Black Raven Solutions"
@@ -89,7 +91,64 @@
         <div class="eyebrow"><span>BLACK RAVEN / 02</span><span data-sl="KONTAKT" data-en="CONTACT">KONTAKT</span></div>
         <h2 data-sl="Tvoja naslednja izkušnja se začne z vprašanjem." data-en="Your next experience begins with a question.">Tvoja naslednja izkušnja se začne z vprašanjem.</h2>
         <p data-sl="Za termine, programe za posameznike in družine, tabore, delavnice ali programe za ekipe pošlji povpraševanje. Končno lokacijo, zahtevano opremo, pogoje in potek uskladimo za konkreten termin." data-en="Ask about dates, individual and family programmes, camps, workshops or team experiences. Exact locations, equipment, conditions and schedules are confirmed for each date.">Za termine, programe za posameznike in družine, tabore, delavnice ali programe za ekipe pošlji povpraševanje. Končno lokacijo, zahtevano opremo, pogoje in potek uskladimo za konkreten termin.</p>
-        <a class="about-contact-mail" href="mailto:info@blackraven.solutions?subject=Povpra%C5%A1evanje%20-%20Black%20Raven%20Solutions">info@blackraven.solutions <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-ember contact-form-jump" href="#contact-enquiry-form" data-sl="Pošlji povpraševanje" data-en="Send an enquiry">Pošlji povpraševanje</a>
+        <span class="about-contact-mail">info@blackraven.solutions</span>
+        <a class="contact-email-alternative" href="mailto:info@blackraven.solutions?subject=Povpra%C5%A1evanje%20-%20Black%20Raven%20Solutions" data-sl="Raje pišeš iz svoje e-pošte? Odpri e-poštni program ↗" data-en="Prefer your email app? Open it here ↗">Raje pišeš iz svoje e-pošte? Odpri e-poštni program ↗</a>
+
+        <section class="contact-form-card" aria-labelledby="contact-form-heading">
+          <div class="contact-form-header">
+            <span class="contact-form-kicker" data-sl="HITRO POVPRAŠEVANJE" data-en="QUICK ENQUIRY">HITRO POVPRAŠEVANJE</span>
+            <h3 id="contact-form-heading" data-sl="Piši nam neposredno." data-en="Send us a message.">Piši nam neposredno.</h3>
+            <p data-sl="Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa." data-en="Send an enquiry without opening your email app.">Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa.</p>
+          </div>
+          <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Povpraševanje je bilo oddano v obdelavo." data-en="Thank you! Your enquiry has been submitted for processing.">Hvala! Povpraševanje je bilo oddano v obdelavo.</p>
+          <p class="contact-form-topic" id="contact-form-topic-display" hidden><strong data-sl="Tema:" data-en="Topic:">Tema:</strong> <span id="contact-topic-label"></span></p>
+          <form id="contact-enquiry-form" class="contact-form" action="https://formsubmit.co/info@blackraven.solutions" method="POST">
+            <input type="hidden" name="_subject" value="Novo povpraševanje - Black Raven Solutions">
+            <input type="hidden" id="contact-topic" name="topic" value="">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_url" value="https://dday2301.github.io/Black-Raven/o-nas.html">
+            <input type="hidden" name="_next" value="https://dday2301.github.io/Black-Raven/o-nas.html?enquiry=sent#kontakt">
+            <div class="contact-form-honeypot" aria-hidden="true">
+              <label for="contact-website">Website</label>
+              <input id="contact-website" type="text" name="_honey" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="contact-form-row">
+              <div class="contact-form-field">
+                <label for="contact-name" data-sl="Ime in priimek *" data-en="Full name *">Ime in priimek *</label>
+                <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+              </div>
+              <div class="contact-form-field">
+                <label for="contact-email" data-sl="E-pošta *" data-en="Email *">E-pošta *</label>
+                <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+              </div>
+            </div>
+            <div class="contact-form-field">
+              <label for="contact-programme" data-sl="Kaj te zanima?" data-en="What are you interested in?">Kaj te zanima?</label>
+              <select id="contact-programme" name="programme">
+                <option value="" data-sl="Izberi (neobvezno)" data-en="Choose (optional)">Izberi (neobvezno)</option>
+                <option value="Tecaji" data-sl="Tečaji" data-en="Courses">Tečaji</option>
+                <option value="Tabori" data-sl="Tabori" data-en="Camps">Tabori</option>
+                <option value="Delavnice" data-sl="Delavnice" data-en="Workshops">Delavnice</option>
+                <option value="Team building">Team building</option>
+                <option value="Ekspedicije" data-sl="Ekspedicije" data-en="Expeditions">Ekspedicije</option>
+                <option value="Drugo" data-sl="Drugo" data-en="Other">Drugo</option>
+              </select>
+            </div>
+            <div class="contact-form-field">
+              <label for="contact-message" data-sl="Sporočilo *" data-en="Message *">Sporočilo *</label>
+              <textarea id="contact-message" name="message" rows="5" minlength="10" maxlength="5000" required></textarea>
+            </div>
+            <p class="contact-form-privacy">
+              <span data-sl="Podatke uporabimo za odgovor na povpraševanje. Sporočilo obdeluje zunanja storitev FormSubmit. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov." data-en="We use these details to respond to your enquiry. Messages are processed by the external service FormSubmit. Do not send sensitive personal or medical details.">Podatke uporabimo za odgovor na povpraševanje. Sporočilo obdeluje zunanja storitev FormSubmit. Ne pošiljaj občutljivih osebnih ali zdravstvenih podatkov.</span>
+              <a href="https://formsubmit.co/privacy.pdf" target="_blank" rel="noopener noreferrer" data-sl="Politika zasebnosti storitve" data-en="Service privacy policy">Politika zasebnosti storitve</a>
+            </p>
+            <button class="contact-form-submit" type="submit">
+              <span data-sl="Pošlji povpraševanje" data-en="Send enquiry">Pošlji povpraševanje</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </form>
+        </section>
       </div>
       <aside class="about-contact-panel">
         <span class="about-contact-label">FIELD NOTES / NEXT STEPS</span>

@@ -124,6 +124,27 @@ for filename, page in pages.items():
             if unquote(parsed.fragment) not in pages[destination].ids:
                 add_error(f"{filename}: missing anchor in {link}")
 
+# Contact-form contract: test markup and integration without submitting private data.
+contact_source = (ROOT / "o-nas.html").read_text(encoding="utf-8")
+form_start = re.search(r'<form\b[^>]*\bid="contact-enquiry-form"[^>]*>', contact_source)
+if not form_start:
+    add_error("o-nas.html: missing contact enquiry form")
+else:
+    if 'action="https://formsubmit.co/info@blackraven.solutions"' not in form_start.group():
+        add_error("o-nas.html: unexpected contact form destination")
+    if 'method="POST"' not in form_start.group():
+        add_error("o-nas.html: contact form must use POST")
+    form_content = contact_source[form_start.end():].split("</form>", 1)[0]
+    for field_name in ('name', 'email', 'message', '_honey', '_subject', '_next'):
+        if f'name="{field_name}"' not in form_content:
+            add_error(f"o-nas.html: missing contact field {field_name}")
+    for field_id in ('contact-name', 'contact-email', 'contact-message'):
+        if f'for="{field_id}"' not in form_content or f'id="{field_id}"' not in form_content:
+            add_error(f"o-nas.html: missing label or field for {field_id}")
+    for file in ('assets/css/contact-form.css', 'assets/js/contact-form.js'):
+        if not (ROOT / file).is_file():
+            add_error(f"Missing contact-form asset: {file}")
+
 xml_path = ROOT / "sitemap.xml"
 if xml_path.is_file():
     try:

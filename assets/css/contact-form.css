@@ -1,0 +1,25 @@
+/* Black Raven enquiry form — scoped to the contact page. */
+.contact-form-card{margin-top:2.4rem;padding:clamp(1.2rem,3vw,2.1rem);background:#f7f5ee;border:1px solid rgba(19,48,30,.18);border-radius:22px;box-shadow:0 15px 35px rgba(15,40,26,.06)}
+.contact-form-header h3{font-family:"Newsreader",Georgia,serif;font-size:clamp(2rem,3vw,2.7rem);line-height:1.07;letter-spacing:-.035em;margin:.5rem 0 .7rem;color:#173522}
+.contact-form-header p{font-size:.94rem;line-height:1.6;margin:0 0 1.5rem;color:#405547}
+.contact-form-kicker{display:block;color:#a34f30;font-size:.68rem;letter-spacing:.17em;font-weight:800}
+.contact-form{display:grid;gap:1rem}
+.contact-form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.contact-form-field{display:flex;flex-direction:column;min-width:0;gap:.42rem}
+.contact-form-field label{font-size:.84rem;font-weight:700;color:#25422e}
+.contact-form-field input,.contact-form-field select,.contact-form-field textarea{display:block;width:100%;min-width:0;border:1px solid #b6c4b5;border-radius:10px;padding:.86rem .94rem;background:#fff;color:#193522;font:inherit;font-size:1rem;line-height:1.4;box-sizing:border-box;transition:border-color .15s ease,box-shadow .15s ease}
+.contact-form-field textarea{min-height:128px;resize:vertical}
+.contact-form-field input:focus,.contact-form-field select:focus,.contact-form-field textarea:focus{outline:2px solid #8b4e32;outline-offset:1px;border-color:#8b4e32}
+.contact-form-privacy{font-size:.8rem!important;line-height:1.55!important;color:#526357;margin:0!important}
+.contact-form-privacy a{display:inline-block;margin-top:.35rem;color:#264d34;text-decoration:underline;text-underline-offset:3px}
+.contact-form-privacy a:focus-visible{outline:2px solid #8b4e32;outline-offset:3px}
+.contact-form-submit{display:inline-flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;min-height:52px;padding:.9rem 1.1rem;border:0;border-radius:10px;background:#234a34;color:#fff;font:inherit;font-weight:750;cursor:pointer;transition:background-color .15s ease}
+.contact-form-submit:hover{background:#123522}
+.contact-form-submit:focus-visible{outline:3px solid #ae633e;outline-offset:3px}
+.contact-form-submit span[aria-hidden]{font-size:1.3rem}
+.contact-form-honeypot{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.contact-form-success{margin:0 0 1.25rem!important;padding:.95rem 1.1rem;border:1px solid #83ad86;border-radius:10px;background:#e4f2e2;color:#1d4c27;font-size:.94rem!important}
+.contact-form-success[hidden]{display:none!important}
+.contact-form-success:focus{outline:2px solid #234a34;outline-offset:3px}
+@media(max-width:620px){.contact-form-card{margin-top:2rem}.contact-form-row{grid-template-columns:1fr}.contact-form-field textarea{min-height:155px}}
+@media(prefers-reduced-motion:reduce){.contact-form-field input,.contact-form-field select,.contact-form-field textarea,.contact-form-submit{transition:none}}
