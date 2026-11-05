@@ -130,7 +130,7 @@
     // Integration mock: no real third-party requests, no customer data sent.
     const context = await browser.newContext({ viewport: { width: 900, height: 800 } });
     const page = await context.newPage();
-    const mockEndpoint = 'https://formspree.io/f/mockbr98765';
+    const mockEndpoint = 'https://api.blackraven.solutions/contact';
     let accepted = 0;
     await page.route('**/o-nas.html', async route => {
       const response = await route.fetch();
@@ -138,11 +138,27 @@
       await route.fulfill({ response, body: html });
     });
     await page.route(mockEndpoint, async route => {
+      if (route.request().method() === 'OPTIONS') {
+        return route.fulfill({
+          status: 204,
+          headers: {
+            'access-control-allow-origin': '*',
+            'access-control-allow-methods': 'POST, OPTIONS',
+            'access-control-allow-headers': 'Content-Type'
+          },
+          body: ''
+        });
+      }
       accepted += 1;
+      const submitted = route.request().postDataJSON();
+      if (submitted.name !== 'Browser Test' || submitted.email !== 'visitor@example.org' ||
+          submitted.message !== 'Safe mocked test message only') {
+        issues.push('contact AJAX mock: malformed JSON payload');
+      }
       await route.fulfill({
-        status: 200,
+        status: 202,
         headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ ok: true })
+        body: JSON.stringify({ accepted: true })
       });
     });
     await page.goto(base + 'o-nas.html', { waitUntil: 'load' });

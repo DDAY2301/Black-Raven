@@ -1,0 +1,17 @@
+{
+  "name": "black-raven-contact-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Direct GoDaddy SMTP contact relay for Black Raven",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+# Deploy after DNS api.blackraven.solutions points to this server.
+# Caddy handles HTTPS when ports 80 and 443 are reachable.
+api.blackraven.solutions {
+    reverse_proxy 127.0.0.1:3000 {
+        header_up X-Real-IP {remote_host}
+    }
+    encode zstd gzip
+}

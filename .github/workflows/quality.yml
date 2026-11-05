@@ -18,3 +18,6 @@ jobs:
         run: |
           node --check assets/js/main.js
           node --check assets/js/contact-form.js
+          node --check backend/server.js
+          node --check backend/lib.js
+          node --test backend/tests/validation.test.js

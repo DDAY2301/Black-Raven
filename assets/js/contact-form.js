@@ -30,10 +30,10 @@
     status.hidden = hide;
   };
 
-  // Form ID must be created in the owner-controlled Formspree account.
-  // Do not insert a made-up ID or submit to an unverified external destination.
+  // Use only the HTTPS endpoint of our own API. SMTP credentials stay server-side.
+  // Do not enable until the backend is deployed and verified.
   const endpoint = (form.dataset.endpoint || '').trim();
-  const configured = /^https:\/\/formspree\.io\/f\/[A-Za-z0-9]{6,40}$/.test(endpoint);
+  const configured = endpoint === 'https://api.blackraven.solutions/contact';
   submitButton.disabled = !configured;
   setStatus('offline', configured);
 
@@ -77,8 +77,15 @@
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.elements.namedItem('name')?.value || '',
+          email: form.elements.namedItem('email')?.value || '',
+          programme: form.elements.namedItem('programme')?.value || '',
+          topic: form.elements.namedItem('topic')?.value || '',
+          message: form.elements.namedItem('message')?.value || '',
+          _gotcha: form.elements.namedItem('_gotcha')?.value || ''
+        }),
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         mode: 'cors',
         credentials: 'omit',
         redirect: 'error',
@@ -91,13 +98,13 @@
         setStatus('limit');
         return;
       }
-      if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      if (response.status !== 202 || result.accepted !== true) {
         setStatus('failed');
         return;
       }
 
-      // A successful HTTP status means the form service accepted the request;
-      // only the mailbox owner can confirm final email delivery.
+      // Our SMTP relay accepted the request; only inbox delivery testing confirms arrival.
       status.hidden = true;
       form.reset();
       success.hidden = false;
