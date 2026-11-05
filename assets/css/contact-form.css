@@ -23,3 +23,11 @@
 .contact-form-success:focus{outline:2px solid #234a34;outline-offset:3px}
 @media(max-width:620px){.contact-form-card{margin-top:2rem}.contact-form-row{grid-template-columns:1fr}.contact-form-field textarea{min-height:155px}}
 @media(prefers-reduced-motion:reduce){.contact-form-field input,.contact-form-field select,.contact-form-field textarea,.contact-form-submit{transition:none}}
+
+/* Show the inline form by default; email apps are an explicit alternative. */
+.about-contact .contact-form-jump{display:inline-flex;margin-top:1.2rem;align-items:center}
+.about-contact .about-contact-mail{display:block;width:max-content;max-width:100%;margin-top:1.55rem}
+.contact-email-alternative{display:inline-block;margin-top:.75rem;color:#264d34;font-size:.9rem;text-decoration:underline;text-underline-offset:4px}
+.contact-email-alternative:focus-visible{outline:3px solid #a34f30;outline-offset:4px}
+.contact-form-topic{background:#e9eee7;color:#25432d;padding:.7rem .85rem;margin:0 0 1rem!important;border-left:3px solid #a34f30;border-radius:5px;overflow-wrap:anywhere;font-size:.9rem!important}
+.contact-form-topic[hidden]{display:none!important}

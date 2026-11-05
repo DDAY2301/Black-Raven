@@ -57,6 +57,26 @@
           issues.push(tag + ': neither navigation nor menu button is visible');
         }
   
+        // Exercise contact form validation and context without submitting any request.
+        if (name === 'o-nas.html') {
+          const contact = page.locator('#contact-enquiry-form');
+          if (await contact.count() !== 1) issues.push(tag + ': missing contact form');
+          else {
+            const endPoint = await contact.getAttribute('action');
+            if (endPoint !== 'https://formsubmit.co/info@blackraven.solutions') issues.push(tag + ': wrong form target');
+            const invalid = await contact.evaluate(el => !el.checkValidity());
+            if (!invalid) issues.push(tag + ': empty required fields passed validation');
+            await page.locator('#contact-name').fill('Browser Test');
+            await page.locator('#contact-email').fill('visitor@example.org');
+            await page.locator('#contact-message').fill('Test message without submission');
+            if (!(await contact.evaluate(el => el.checkValidity()))) issues.push(tag + ': valid form failed validation');
+            await page.goto(base + 'o-nas.html?topic=Osnovni%20te%C4%8Daj#contact-enquiry-form', { waitUntil: 'load' });
+            if ((await page.locator('#contact-programme').inputValue()) !== 'Tecaji') issues.push(tag + ': programme prefill failed');
+            if ((await page.locator('#contact-topic').inputValue()) !== 'Osnovni tečaj') issues.push(tag + ': topic prefill failed');
+            await page.goto(base + name, { waitUntil: 'load' });
+          }
+        }
+
         if (name === 'gallery.html') {
           const first = page.locator('.field-gallery-card').first();
           await first.click();
