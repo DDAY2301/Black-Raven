@@ -1,31 +1,34 @@
-# Kontaktni obrazec — navodila za aktivacijo
+# Varna dostava povpraševanj Black Raven — aktivacija
 
-## Kaj je pripravljeno
+## Zakaj je bil FormSubmit odstranjen
 
-Stran `o-nas.html` vsebuje kontaktni obrazec (SL/EN), ki pošlje sporočilo prek https://formsubmit.co/ na `info@blackraven.solutions`. Primarni gumbi »Povprašaj« vodijo na obrazec; poslovni naslov je jasno in ločeno zapisan pod obrazcem, brez pojavnih oken e-poštnih programov. Obrazec ne uporablja SMTP gesel ali zasebnih ključev v brskalniku.
+Varnostni dodatek v uporabnikovem brskalniku je pri prehodu na `formsubmit.co` prikazal opozorilo o domnevnem phishingu. Opozorila **ne obidemo**. Stari direktni POST in samodejna preusmeritev na FormSubmit sta v celoti odstranjena.
 
-- Polja: ime, e-pošta, program (neobvezno), sporočilo.
-- Obvezna polja in osnovna validacija so izvedeni v HTML.
-- Zaščita: FormSubmit privzeta reCAPTCHA + skrito polje `_honey` (honeypot).
-- Po uspešnem oddajanju FormSubmit vrne obiskovalca na `o-nas.html?enquiry=sent#kontakt`.
-- Zunanja storitev obdeluje osebne podatke; pred objavo je treba preveriti GDPR, pravno podlago in informacije o zasebnosti.
+## Novi način
 
-## Koraki pred objavo
+- Na strani `o-nas.html` ostane dvojezični obrazec in povezave z vseh programov.
+- JavaScript odda podatke z `fetch` prek HTTPS na preverjen Formspree form-ID endpoint; obiskovalec ne zapusti strani.
+- Vgrajeni so: HTML validacija, honeypot `_gotcha`, zaščita pred dvojnim klikom, časovna omejitev, obravnava napak / statusa 429 in povratna informacija uporabniku.
+- Podatki se **ne pošljejo**, če form-ID ni nastavljen, endpoint ni dovoljen ali če pride do napake povezave.
+- Sporočilo o uspehu pomeni samo, da je strežnik sprejel oddajo; lastnik mora posebej preizkusiti prejem e-pošte.
 
-1. Preverite, da poslovni e-poštni predal `info@blackraven.solutions` sprejema pošto (DNS MX; preverite tudi SPF/DKIM/DMARC).
-2. Preglejte PR in ga združite v `main` šele, ko se odločite za objavo. Workflow za GitHub Pages objavlja samo `main`.
-3. Na objavljeni strani izpolnite obrazec s testnim sporočilom. **Prva oddaja sproži aktivacijski e-mail na prejemni naslov**.
-4. Lastnik predala potrdi povezavo v aktivacijskem sporočilu (po potrebi preveri Spam).
-5. Ponovno pošljite testno sporočilo; preverite dejanski prejem v predalu, odgovor z »Reply«, reCAPTCHA, SL/EN jezik ter mobilni in namizni prikaz.
-6. Če se spremeni produkcijska domena, v `o-nas.html` posodobite vrednosti skritih polj `_next` in `_url`.
+## Enkratna aktivacija
 
-## Pomembno
+1. Uredi GoDaddy MX in testiraj, da `info@blackraven.solutions` sprejema navadna e-poštna sporočila.
+2. Odpri **https://formspree.io/register**. Račun naj bo v lasti Black Raven Solutions. Uporabi brezplačni paket (po ceniku novembra 2026 do 50 oddaj na mesec).
+3. V Formspree ustvarite formo **Black Raven – Contact**, kot *Target Email* nastavite `info@blackraven.solutions`. Če predal še ni delujoč, počakajte z aktivacijo.
+4. V nastavitvah Formspree omogoči **Restrict to Domain**, vpiši pravi produkcijski domeni oziroma izvor (npr. `blackraven.solutions` ali `dday2301.github.io` odvisno, kje je stran dejansko objavljena). Omogoči spam zaščito.
+5. Kopiraj endpoint v obliki `https://formspree.io/f/XXXXXXXX` (samo pravi ustvarjeni ID; brez e-poštnega naslova v URL-ju).
+6. V `o-nas.html` nastavi **`data-endpoint="https://formspree.io/f/XXXXXXXX"`** na obrazcu `#contact-enquiry-form`. Ne spreminjaj direktno kode JS. Po tej spremembi je gumb lahko aktiviran.
+7. Testiraj s testnimi podatki: uspeh, zavrnitev, izpad omrežja, mobilni/namizni prikaz ter dejanski prejem v poštnem predalu. Če e-pošta ne prispe, preglej Formspree Inbox in DNS.
+8. Pred javno uporabo pregledaš pogoje obdelave osebnih podatkov in pravne obveznosti (GDPR, možen prenos podatkov v ZDA). Zagotovi ustrezno obvestilo o zasebnosti in hrambo. **Ne zbiraj zdravstvenih ali drugih občutljivih podatkov.**
 
-Ne izvajajte testov na resničnih osebnih podatkih. Brez aktivacije FormSubmit in uspešnega preizkusa prejema ne označite e-poštnega toka kot delujočega. Storitve ne povezujte s production predalom za obdelavo zasebnih podatkov, dokler se ne preverijo pogodbeni pogoji in morebitni prenosi podatkov zunaj EGP.
+## Če endpoint še ni vzpostavljen
 
-Koda: `o-nas.html`, `assets/css/contact-form.css`, `assets/js/contact-form.js`.
-Vir: https://formsubmit.co/documentation
+`data-endpoint=""` pomeni **varno neaktiven obrazec**. Gumb je onemogočen in obiskovalec vidi pošteno pojasnilo z nadomestnim e-poštnim naslovom. Podatkov **ne pošiljamo** nikamor.
 
-## Gumbe »Povprašaj« in kontekst
+## Brez skrivnih ključev v javnem repozitoriju
 
-Vsi gumbi za povpraševanja na podstraneh vodijo na `o-nas.html#contact-enquiry-form` namesto do Outlook pojavnega okna. Kadar je bila prej nastavljena zadeva e-pošte, se ta pošlje v URL kot `topic` in v obrazcu prikaže ter shrani v skrito polje. Naslov `info@blackraven.solutions` je prikazan ločeno pod obrazcem kot navadno besedilo; odvečna povezava `mailto:` in podvojeni gumb sta odstranjena.
+Formspree form-ID je namenjen javni uporabi v statični strani, ni SMTP geslo. V javno kodo nikoli ne dodajaj Gmail / GoDaddy gesel, Resend API ključev ali drugih zasebnih poverilnic.
+
+Viri: https://help.formspree.io/articles/building-your-form/submit-forms-with-javascript-ajax , https://help.formspree.io/articles/building-your-form/honeypot-spam-filtering , https://formspree.io/legal/privacy-policy/ .
