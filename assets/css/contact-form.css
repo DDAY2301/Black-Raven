@@ -24,10 +24,12 @@
 @media(max-width:620px){.contact-form-card{margin-top:2rem}.contact-form-row{grid-template-columns:1fr}.contact-form-field textarea{min-height:155px}}
 @media(prefers-reduced-motion:reduce){.contact-form-field input,.contact-form-field select,.contact-form-field textarea,.contact-form-submit{transition:none}}
 
-/* Show the inline form by default; email apps are an explicit alternative. */
-.about-contact .contact-form-jump{display:inline-flex;margin-top:1.2rem;align-items:center}
-.about-contact .about-contact-mail{display:block;width:max-content;max-width:100%;margin-top:1.55rem}
-.contact-email-alternative{display:inline-block;margin-top:.75rem;color:#264d34;font-size:.9rem;text-decoration:underline;text-underline-offset:4px}
-.contact-email-alternative:focus-visible{outline:3px solid #a34f30;outline-offset:4px}
+/* A clear primary action: one form, with unobtrusive direct contact details below. */
+.about-contact .about-contact-grid{align-items:start}
+.about-contact .contact-form-card{margin-top:clamp(1.8rem,3vw,2.6rem)}
+.about-contact .contact-direct-email{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:1.1rem;row-gap:.3rem;min-width:0;margin-top:1.35rem;padding-top:1.15rem;border-top:1px solid rgba(34,65,44,.2)}
+.contact-direct-email>span:first-child{font-size:.86rem;line-height:1.5;color:#536458}
+.about-contact .contact-direct-address{color:#1c412d;font-size:clamp(1rem,1.45vw,1.18rem);line-height:1.5;letter-spacing:.005em;font-weight:750;overflow-wrap:anywhere}
+@media(max-width:620px){.about-contact .contact-direct-email{display:grid;gap:.2rem}.about-contact .contact-direct-address{font-size:1.04rem}}
 .contact-form-topic{background:#e9eee7;color:#25432d;padding:.7rem .85rem;margin:0 0 1rem!important;border-left:3px solid #a34f30;border-radius:5px;overflow-wrap:anywhere;font-size:.9rem!important}
 .contact-form-topic[hidden]{display:none!important}
