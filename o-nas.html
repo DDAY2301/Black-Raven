@@ -91,7 +91,9 @@
         <div class="eyebrow"><span>BLACK RAVEN / 02</span><span data-sl="KONTAKT" data-en="CONTACT">KONTAKT</span></div>
         <h2 data-sl="Tvoja naslednja izkušnja se začne z vprašanjem." data-en="Your next experience begins with a question.">Tvoja naslednja izkušnja se začne z vprašanjem.</h2>
         <p data-sl="Za termine, programe za posameznike in družine, tabore, delavnice ali programe za ekipe pošlji povpraševanje. Končno lokacijo, zahtevano opremo, pogoje in potek uskladimo za konkreten termin." data-en="Ask about dates, individual and family programmes, camps, workshops or team experiences. Exact locations, equipment, conditions and schedules are confirmed for each date.">Za termine, programe za posameznike in družine, tabore, delavnice ali programe za ekipe pošlji povpraševanje. Končno lokacijo, zahtevano opremo, pogoje in potek uskladimo za konkreten termin.</p>
-        <a class="about-contact-mail" href="mailto:info@blackraven.solutions?subject=Povpra%C5%A1evanje%20-%20Black%20Raven%20Solutions">info@blackraven.solutions <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-ember contact-form-jump" href="#contact-enquiry-form" data-sl="Pošlji povpraševanje" data-en="Send an enquiry">Pošlji povpraševanje</a>
+        <span class="about-contact-mail">info@blackraven.solutions</span>
+        <a class="contact-email-alternative" href="mailto:info@blackraven.solutions?subject=Povpra%C5%A1evanje%20-%20Black%20Raven%20Solutions" data-sl="Raje pišeš iz svoje e-pošte? Odpri e-poštni program ↗" data-en="Prefer your email app? Open it here ↗">Raje pišeš iz svoje e-pošte? Odpri e-poštni program ↗</a>
 
         <section class="contact-form-card" aria-labelledby="contact-form-heading">
           <div class="contact-form-header">
@@ -100,8 +102,10 @@
             <p data-sl="Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa." data-en="Send an enquiry without opening your email app.">Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa.</p>
           </div>
           <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Povpraševanje je bilo oddano v obdelavo." data-en="Thank you! Your enquiry has been submitted for processing.">Hvala! Povpraševanje je bilo oddano v obdelavo.</p>
+          <p class="contact-form-topic" id="contact-form-topic-display" hidden><strong data-sl="Tema:" data-en="Topic:">Tema:</strong> <span id="contact-topic-label"></span></p>
           <form id="contact-enquiry-form" class="contact-form" action="https://formsubmit.co/info@blackraven.solutions" method="POST">
             <input type="hidden" name="_subject" value="Novo povpraševanje - Black Raven Solutions">
+            <input type="hidden" id="contact-topic" name="topic" value="">
             <input type="hidden" name="_template" value="table">
             <input type="hidden" name="_url" value="https://dday2301.github.io/Black-Raven/o-nas.html">
             <input type="hidden" name="_next" value="https://dday2301.github.io/Black-Raven/o-nas.html?enquiry=sent#kontakt">
