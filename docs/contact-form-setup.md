@@ -2,7 +2,7 @@
 
 ## Kaj je pripravljeno
 
-Stran \`o-nas.html\` vsebuje kontaktni obrazec (SL/EN), ki pošlje sporočilo prek https://formsubmit.co/ na \`info@blackraven.solutions\`. Obstoječe \`mailto:\` povezave so ohranjene. Obrazec ne uporablja SMTP gesel ali zasebnih ključev v brskalniku.
+Stran \`o-nas.html\` vsebuje kontaktni obrazec (SL/EN), ki pošlje sporočilo prek https://formsubmit.co/ na \`info@blackraven.solutions\`. Primarni gumbi »Povprašaj« vodijo na obrazec, neposredna možnost za odpiranje e-poštnega programa pa ostaja kot jasno označena alternativa na kontaktni strani. Obrazec ne uporablja SMTP gesel ali zasebnih ključev v brskalniku.
 
 - Polja: ime, e-pošta, program (neobvezno), sporočilo.
 - Obvezna polja in osnovna validacija so izvedeni v HTML.
@@ -25,3 +25,7 @@ Ne izvajajte testov na resničnih osebnih podatkih. Brez aktivacije FormSubmit i
 
 Koda: \`o-nas.html\`, \`assets/css/contact-form.css\`, \`assets/js/contact-form.js\`.
 Vir: https://formsubmit.co/documentation
+
+## Gumbe »Povprašaj« in kontekst
+
+Vsi gumbi za povpraševanja na podstraneh vodijo na `o-nas.html#contact-enquiry-form` namesto do Outlook pojavnega okna. Kadar je bila prej nastavljena zadeva e-pošte, se ta pošlje v URL kot `topic` in v obrazcu prikaže ter shrani v skrito polje. Običajni naslov `info@blackraven.solutions` je izpisan, posebna povezava `Odpri e-poštni program` pa ohrani možnost `mailto:`.
