@@ -5,3 +5,11 @@ backend/.env.*
 backend/node_modules/
 public/
 visual-qa/
+
+# Never commit Cloudflare secrets or build bundles.
+worker/.dev.vars
+worker/.dev.vars.*
+!worker/.dev.vars.example
+worker/node_modules/
+worker-dist/
+worker/.wrangler/
