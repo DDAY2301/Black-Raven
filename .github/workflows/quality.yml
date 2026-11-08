@@ -21,3 +21,11 @@ jobs:
           node --check backend/server.js
           node --check backend/lib.js
           node --test backend/tests/validation.test.js
+          node --check worker/src/index.js
+          node --check worker/src/smtp.js
+          node --test worker/test/*.test.mjs
+      - name: Verify Cloudflare Worker bundle
+        working-directory: worker
+        run: |
+          npm install --no-audit --no-fund
+          npx wrangler deploy --dry-run --outdir=../worker-dist
