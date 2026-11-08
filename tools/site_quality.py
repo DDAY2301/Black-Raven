@@ -130,7 +130,7 @@ form_start = re.search(r'<form\b[^>]*\bid="contact-enquiry-form"[^>]*>', contact
 if not form_start:
     add_error("o-nas.html: missing contact enquiry form")
 else:
-    if 'action=' in form_start.group() or 'data-endpoint="https://api.blackraven.solutions/contact"' not in form_start.group():
+    if 'action=' in form_start.group() or 'data-endpoint="https://blackraven-contact.dan-grmusa.workers.dev/contact"' not in form_start.group():
         add_error("o-nas.html: must point only to owned SMTP endpoint")
     if 'method="POST"' not in form_start.group():
         add_error("o-nas.html: contact form must use POST")
@@ -153,7 +153,7 @@ else:
     if 'https://formsubmit.co' in contact_source:
         add_error("o-nas.html: blocked old form processor remains")
     js_text = (ROOT / "assets/js/contact-form.js").read_text(encoding="utf-8")
-    if 'api.blackraven.solutions' not in js_text or 'blackraven-contact.dan-grmusa.workers.dev' not in js_text or '/ready' not in js_text or 'endpointIsReady' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
+    if 'blackraven-contact.dan-grmusa.workers.dev' not in js_text or '/ready' not in js_text or 'checkReady' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text or '15000' not in js_text:
         add_error("contact-form.js: first-party asynchronous submission missing")
     if 'formspree' in js_text or 'formsubmit.co' in js_text:
         add_error("contact-form.js: external form processor still referenced")
