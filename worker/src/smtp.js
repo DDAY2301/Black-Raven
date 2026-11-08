@@ -34,7 +34,7 @@ export function composeMail({ from, to, replyTo, body }) {
     encodedBody
   ].join("\r\n");
   // Body is base64, so no SMTP dot-stuffing is needed.
-  return mime.replace(/\r?\n/g, "\r\n");
+  return mime;
 }
 
 class Protocol {
