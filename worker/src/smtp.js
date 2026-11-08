@@ -1,7 +1,6 @@
 // Direct, implicit-TLS SMTP transport for Cloudflare Workers TCP sockets.
 // No third-party email delivery API. Do not log SMTP secrets or message content.
 const utf8 = new TextEncoder();
-const decode = new TextDecoder();
 
 function base64(value) {
   const bytes = utf8.encode(value);
@@ -43,6 +42,7 @@ class Protocol {
     this.reader = socket.readable.getReader();
     this.writer = socket.writable.getWriter();
     this.buffer = "";
+    this.decode = new TextDecoder();
   }
   async line() {
     while (true) {
@@ -54,7 +54,7 @@ class Protocol {
       }
       const { value, done } = await this.reader.read();
       if (done) throw new Error("SMTP connection closed");
-      this.buffer += decode.decode(value, { stream: true });
+      this.buffer += this.decode.decode(value, { stream: true });
       if (this.buffer.length > 16000) throw new Error("SMTP response too long");
     }
   }
