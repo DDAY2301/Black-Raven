@@ -33,9 +33,23 @@ function json(status, value, origin) {
   });
 }
 
+function smtpFailureStage(error) {
+  const message = String(error?.message || "");
+  if (/SMTP unexpected response 53[045]/.test(message)) return "smtp_auth_rejected";
+  if (/SMTP unexpected response/.test(message)) return "smtp_server_rejected";
+  if (/SMTP timeout/.test(message)) return "smtp_timeout";
+  return "smtp_socket_or_tls_failure";
+}
+
 async function ready(env) {
   const auth = config(env);
-  if (!auth) return false;
+  if (!auth) {
+    if (Date.now() >= cachedReady.until) {
+      console.warn("blackraven-contact SMTP readiness", { result: "unavailable", stage: "runtime_credentials_missing" });
+      cachedReady = { until: Date.now() + 60000, value: false };
+    }
+    return false;
+  }
   if (Date.now() < cachedReady.until) return cachedReady.value;
   if (pendingReady) return pendingReady;
   pendingReady = smtpTransaction(connect, auth)
@@ -43,7 +57,13 @@ async function ready(env) {
       cachedReady = { until: Date.now() + 60000, value: true };
       return true;
     })
-    .catch(() => {
+    .catch((error) => {
+      // Log only a fixed diagnostic category. NEVER log credentials, user data,
+      // or raw server replies; this is visible only in Cloudflare Worker logs.
+      console.warn("blackraven-contact SMTP readiness", {
+        result: "unavailable",
+        stage: smtpFailureStage(error)
+      });
       cachedReady = { until: Date.now() + 15000, value: false };
       return false;
     })
