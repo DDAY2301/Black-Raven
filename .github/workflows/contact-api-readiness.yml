@@ -1,0 +1,38 @@
+name: Black Raven public contact API readiness
+on:
+  push:
+    paths:
+      - ".github/workflows/contact-api-readiness.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Check first-party Worker health and SMTP readiness without sending email
+        shell: bash
+        run: |
+          node <<'NODE'
+          const hosts = [
+            'https://blackraven-contact.dan-grmusa.workers.dev',
+            'https://blackraven-contactkopiraj.dan-grmusa.workers.dev'
+          ];
+          for (const host of hosts) {
+            for (const pathname of ['/health', '/ready']) {
+              try {
+                const response = await fetch(host + pathname, {
+                  method: 'GET',
+                  headers: { 'Origin': 'https://blackraven.solutions', 'Accept': 'application/json' },
+                  signal: AbortSignal.timeout(9000)
+                });
+                const body = (await response.text()).slice(0, 220);
+                console.log(host + pathname, 'HTTP', response.status, 'body:', body);
+              } catch (error) {
+                console.log(host + pathname, 'UNREACHABLE', error.name, error.cause?.code || '');
+              }
+            }
+          }
+          // This is an advisory check: real email delivery still needs inbox confirmation.
+          NODE
