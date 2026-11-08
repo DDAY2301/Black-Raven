@@ -1,0 +1,50 @@
+name: Black Raven one-time live contact send verification
+on:
+  push:
+    paths:
+      - ".github/workflows/contact-live-once.yml"
+permissions:
+  contents: read
+jobs:
+  send-one-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Submit one clearly marked test via real first-party Cloudflare Worker
+        run: |
+          node <<'NODE'
+          const url = 'https://blackraven-contact.dan-grmusa.workers.dev/contact';
+          const marker = 'BR-CONTACT-TEST-20261108';
+          const payload = {
+            name: 'Black Raven tehnični preizkus',
+            email: 'blackraven-test@example.org',
+            programme: 'Drugo',
+            topic: 'Preizkus delovanja kontaktnega obrazca',
+            message: 'To je enkratni avtomatski preizkus dostave sporočil Black Raven. Oznaka: ' + marker + '. Sporočilo je testno in ne potrebuje odgovora.',
+            _gotcha: ''
+          };
+          try {
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                Origin: 'https://blackraven.solutions',
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload),
+              signal: AbortSignal.timeout(28000)
+            });
+            const result = await response.json().catch(() => ({}));
+            console.log('Worker POST /contact status:', response.status, 'accepted:', result.accepted === true, 'marker:', marker);
+            if (response.status !== 202 || result.accepted !== true) {
+              console.error('Worker did not accept the test email. HTTP status:', response.status,
+                            'error category:', result.error || 'unknown');
+              process.exitCode = 1;
+            } else {
+              console.log('SMTP server accepted the message for delivery; inbox receipt must be checked separately.');
+            }
+          } catch (error) {
+            console.error('Worker POST network failure:', error.name);
+            process.exitCode = 1;
+          }
+          NODE
