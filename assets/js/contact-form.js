@@ -31,82 +31,58 @@
     status.hidden = hide;
   };
 
-  // Only contact the Black Raven API or the two Cloudflare Worker hostnames
-  // previously created under the site owner's Cloudflare account.
-  // A Worker must pass an actual /ready SMTP check before any message is sent.
-  const fallbackHosts = [
-    'https://blackraven-contact.dan-grmusa.workers.dev/contact',
-    'https://blackraven-contactkopiraj.dan-grmusa.workers.dev/contact'
-  ];
-  const allowedHosts = new Set([
-    'api.blackraven.solutions',
-    'blackraven-contact.dan-grmusa.workers.dev',
-    'blackraven-contactkopiraj.dan-grmusa.workers.dev'
-  ]);
-  const isOwnedEndpoint = (candidate) => {
-    try {
-      const parsed = new URL(candidate);
-      return parsed.protocol === 'https:' && allowedHosts.has(parsed.hostname)
-        && parsed.pathname === '/contact' && !parsed.search && !parsed.hash
-        && !parsed.username && !parsed.password && !parsed.port;
-    } catch (_) {
-      return false;
-    }
-  };
-  const candidates = [...new Set([form.dataset.endpoint || '', ...fallbackHosts].filter(isOwnedEndpoint))];
-  let endpoint = '';
+  // One verified first-party Worker endpoint. No stale API or guessed fallback hosts.
+  // Cloudflare's first SMTP TLS handshake can take more than 3.5 seconds.
+  const endpoint = (form.dataset.endpoint || '').trim();
+  const expectedEndpoint = 'https://blackraven-contact.dan-grmusa.workers.dev/contact';
+  const configured = endpoint === expectedEndpoint;
+  const readyUrl = 'https://blackraven-contact.dan-grmusa.workers.dev/ready';
   let available = false;
   let checking = null;
   submitButton.disabled = true;
 
-  async function endpointIsReady(candidate) {
-    const readyUrl = new URL('/ready', candidate).href;
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 3500);
-    try {
-      const response = await fetch(readyUrl, {
-        method: 'GET', headers: { Accept: 'application/json' },
-        mode: 'cors', credentials: 'omit', redirect: 'error',
-        referrerPolicy: 'no-referrer', cache: 'no-store',
-        signal: controller.signal
-      });
-      if (!response.ok) return false;
-      const result = await response.json().catch(() => null);
-      return result?.ready === true;
-    } catch (_) {
-      return false;
-    } finally {
-      window.clearTimeout(timer);
-    }
-  }
-
   const checkReady = () => {
     if (checking) return checking;
-    if (!candidates.length) {
+    if (!configured) {
       setStatus('offline');
       return Promise.resolve(false);
     }
     setStatus('checking');
-    checking = (async () => {
-      for (const candidate of candidates) {
-        if (await endpointIsReady(candidate)) {
-          endpoint = candidate;
-          available = true;
-          submitButton.disabled = false;
-          setStatus('offline', true);
-          return true;
-        }
-      }
-      endpoint = '';
+    const controller = new AbortController();
+    // First-time TLS authentication regularly takes 3–5s. Allow a full SMTP round trip.
+    const timer = window.setTimeout(() => controller.abort(), 15000);
+    checking = fetch(readyUrl, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      mode: 'cors',
+      credentials: 'omit',
+      redirect: 'error',
+      referrerPolicy: 'no-referrer',
+      cache: 'no-store',
+      signal: controller.signal
+    }).then(async (response) => {
+      const result = response.ok ? await response.json().catch(() => null) : null;
+      available = response.ok && result?.ready === true;
+      submitButton.disabled = !available;
+      setStatus('offline', available);
+      return available;
+    }).catch(() => {
       available = false;
       submitButton.disabled = true;
       setStatus('offline');
       return false;
-    })().finally(() => { checking = null; });
+    }).finally(() => {
+      window.clearTimeout(timer);
+      checking = null;
+    });
     return checking;
   };
 
   checkReady();
+  // Recover automatically if the Worker briefly fails; a refresh is never required.
+  window.setInterval(() => {
+    if (!document.hidden && !available) checkReady();
+  }, 25000);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && !available) checkReady();
   });
@@ -139,7 +115,7 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault(); // Never navigate to a third-party form website.
     success.hidden = true;
-    if (!available || !endpoint) {
+    if (!available || !configured) {
       setStatus('offline');
       return;
     }

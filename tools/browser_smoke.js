@@ -84,7 +84,7 @@
             }
             if (await page.locator('.contact-form-jump, .contact-email-alternative').count()) issues.push(tag + ': duplicate contact CTAs remain');
             const endPoint = await contact.getAttribute('data-endpoint');
-            if (endPoint !== 'https://api.blackraven.solutions/contact') issues.push(tag + ': wrong first-party endpoint');
+            if (endPoint !== 'https://blackraven-contact.dan-grmusa.workers.dev/contact') issues.push(tag + ': wrong first-party endpoint');
             if (await contact.getAttribute('action') !== null) issues.push(tag + ': old external form action still present');
             // The button is disabled when no SMTP endpoint is ready; it may become
             // enabled when the owner's Worker has successfully authenticated.
@@ -129,103 +129,89 @@
       await page.close();
       await context.close();
     }
-    // Integration mock: no real third-party requests, no customer data sent.
+    // Browser integration mocks: these never transmit any real email.
     const context = await browser.newContext({ viewport: { width: 900, height: 800 } });
+    const workerOrigin = 'https://blackraven-contact.dan-grmusa.workers.dev';
+    const workerEndpoint = workerOrigin + '/contact';
+    const fakeCors = { 'access-control-allow-origin': '*', 'content-type': 'application/json' };
     const page = await context.newPage();
-    const mockEndpoint = 'https://api.blackraven.solutions/contact';
     let accepted = 0;
-    await page.route('https://api.blackraven.solutions/ready', async route => {
-      await route.fulfill({
-        status: 200,
-        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ ready: true })
-      });
+    let staleRequests = 0;
+    await page.route('https://api.blackraven.solutions/**', async route => {
+      staleRequests++;
+      await route.abort();
     });
-    await page.route(mockEndpoint, async route => {
-      if (route.request().method() === 'OPTIONS') {
-        return route.fulfill({
-          status: 204,
-          headers: {
-            'access-control-allow-origin': '*',
-            'access-control-allow-methods': 'POST, OPTIONS',
-            'access-control-allow-headers': 'Content-Type'
-          },
-          body: ''
-        });
-      }
-      accepted += 1;
+    await page.route(workerOrigin + '/ready', route => route.fulfill({
+      status: 200,
+      headers: fakeCors,
+      body: JSON.stringify({ ready: true })
+    }));
+    await page.route(workerEndpoint, async route => {
+      if (route.request().method() === 'OPTIONS') return route.fulfill({
+        status: 204,
+        headers: {
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'POST, OPTIONS',
+          'access-control-allow-headers': 'Content-Type'
+        }
+      });
+      accepted++;
       const submitted = route.request().postDataJSON();
       if (submitted.name !== 'Browser Test' || submitted.email !== 'visitor@example.org' ||
           submitted.message !== 'Safe mocked test message only') {
-        issues.push('contact AJAX mock: malformed JSON payload');
+        issues.push('contact direct Worker: malformed JSON payload');
       }
-      await route.fulfill({
-        status: 202,
-        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ accepted: true })
-      });
+      await route.fulfill({ status: 202, headers: fakeCors, body: JSON.stringify({ accepted: true }) });
     });
     await page.goto(base + 'o-nas.html', { waitUntil: 'load' });
     try {
       await page.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 7000 });
-    } catch (_) { issues.push('contact AJAX mock: API readiness did not enable submit'); }
-    await page.locator('#contact-name').fill('Browser Test');
-    await page.locator('#contact-email').fill('visitor@example.org');
-    await page.locator('#contact-message').fill('Safe mocked test message only');
-    await page.locator('.contact-form-submit').click();
-    try { await page.locator('#contact-form-success').waitFor({ state: 'visible', timeout: 5000 }); }
-    catch (_) { issues.push('contact AJAX mock: no success after accepted response'); }
-    if (accepted !== 1) issues.push('contact AJAX mock: request count ' + accepted);
-    if (!page.url().startsWith(base + 'o-nas.html')) issues.push('contact AJAX mock: redirected away from site');
-
-    // Regression: the old API hostname may be absent. A verified, site-owned
-    // Cloudflare Worker must then be used for the same on-page submission.
-    await page.unroute('https://api.blackraven.solutions/ready');
-    await page.route('https://api.blackraven.solutions/ready', async route => {
-      await route.fulfill({
-        status: 503,
-        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ ready: false })
-      });
-    });
-    const workerOrigin = 'https://blackraven-contact.dan-grmusa.workers.dev';
-    let fallbackAccepted = 0;
-    await page.route(workerOrigin + '/ready', async route => {
-      await route.fulfill({
-        status: 200,
-        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ ready: true })
-      });
-    });
-    await page.route(workerOrigin + '/contact', async route => {
-      if (route.request().method() === 'OPTIONS') {
-        return route.fulfill({ status: 204, headers: {
-          'access-control-allow-origin': '*',
-          'access-control-allow-methods': 'POST, OPTIONS',
-          'access-control-allow-headers': 'Content-Type'
-        }, body: '' });
-      }
-      fallbackAccepted += 1;
-      await route.fulfill({
-        status: 202,
-        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
-        body: JSON.stringify({ accepted: true })
-      });
-    });
-    await page.goto(base + 'o-nas.html', { waitUntil: 'load' });
-    try {
-      await page.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 9000 });
-    } catch (_) { issues.push('contact Worker fallback: readiness did not enable form'); }
+    } catch (_) { issues.push('contact direct Worker: readiness did not enable submit'); }
     if (!(await page.locator('.contact-form-submit').isDisabled())) {
-      await page.locator('#contact-name').fill('Browser Worker Test');
+      await page.locator('#contact-name').fill('Browser Test');
       await page.locator('#contact-email').fill('visitor@example.org');
-      await page.locator('#contact-message').fill('Fallback SMTP simulation without external transmission');
+      await page.locator('#contact-message').fill('Safe mocked test message only');
       await page.locator('.contact-form-submit').click();
-      try {
-        await page.locator('#contact-form-success').waitFor({ state: 'visible', timeout: 5000 });
-      } catch (_) { issues.push('contact Worker fallback: accepted response not displayed'); }
+      try { await page.locator('#contact-form-success').waitFor({ state: 'visible', timeout: 5000 }); }
+      catch (_) { issues.push('contact direct Worker: success not shown after 202 accepted'); }
     }
-    if (fallbackAccepted !== 1) issues.push('contact Worker fallback: expected one send, got ' + fallbackAccepted);
+    if (accepted !== 1) issues.push('contact direct Worker: expected one send, got ' + accepted);
+    if (staleRequests) issues.push('contact direct Worker: called obsolete API hostname');
+    if (!page.url().startsWith(base + 'o-nas.html')) issues.push('contact direct Worker: redirected away from site');
+
+    // Regression: SMTP TLS verification may exceed the old 3.5s client timeout.
+    // A simulated 5s response must still unlock the form.
+    const slowPage = await context.newPage();
+    await slowPage.route(workerOrigin + '/ready', async route => {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      await route.fulfill({ status: 200, headers: fakeCors, body: JSON.stringify({ ready: true }) });
+    });
+    await slowPage.goto(base + 'o-nas.html', { waitUntil: 'load' });
+    try {
+      await slowPage.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 11000 });
+    } catch (_) { issues.push('contact slow SMTP readiness: button remained disabled after 5 seconds'); }
+    await slowPage.close();
+
+    // Regression: transient 503 must recover without reloading the page.
+    const recoveryPage = await context.newPage();
+    let readyCalls = 0;
+    await recoveryPage.route(workerOrigin + '/ready', async route => {
+      readyCalls++;
+      await route.fulfill({
+        status: readyCalls === 1 ? 503 : 200,
+        headers: fakeCors,
+        body: JSON.stringify({ ready: readyCalls > 1 })
+      });
+    });
+    await recoveryPage.goto(base + 'o-nas.html', { waitUntil: 'load' });
+    try {
+      await recoveryPage.waitForFunction(() =>
+        document.querySelector('#contact-form-status')?.textContent?.includes('nedosegljivo'),
+        null, { timeout: 7000 });
+      await recoveryPage.evaluate(() => window.dispatchEvent(new Event('online')));
+      await recoveryPage.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 7000 });
+    } catch (_) { issues.push('contact transient offline: did not recover after online event'); }
+    await recoveryPage.close();
     await context.close();
   } finally {
     await browser.close();
