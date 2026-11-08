@@ -1,0 +1,3 @@
+# EXAMPLE ONLY. Never commit the real file or password.
+SMTP_USER=info@blackraven.solutions
+SMTP_PASS=REPLACE_ON_WORKER_SECRETS_ONLY
