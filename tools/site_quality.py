@@ -130,8 +130,8 @@ form_start = re.search(r'<form\b[^>]*\bid="contact-enquiry-form"[^>]*>', contact
 if not form_start:
     add_error("o-nas.html: missing contact enquiry form")
 else:
-    if 'action=' in form_start.group() or 'data-endpoint=""' not in form_start.group():
-        add_error("o-nas.html: contact endpoint must be blank until activation")
+    if 'action=' in form_start.group() or 'data-endpoint="https://api.blackraven.solutions/contact"' not in form_start.group():
+        add_error("o-nas.html: must point only to owned SMTP endpoint")
     if 'method="POST"' not in form_start.group():
         add_error("o-nas.html: contact form must use POST")
     form_content = contact_source[form_start.end():].split("</form>", 1)[0]
@@ -153,7 +153,7 @@ else:
     if 'https://formsubmit.co' in contact_source:
         add_error("o-nas.html: blocked old form processor remains")
     js_text = (ROOT / "assets/js/contact-form.js").read_text(encoding="utf-8")
-    if 'api.blackraven.solutions/contact' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
+    if 'api.blackraven.solutions/contact' not in js_text or '/ready' not in js_text or 'event.preventDefault()' not in js_text or 'fetch(endpoint' not in js_text:
         add_error("contact-form.js: first-party asynchronous submission missing")
     if 'formspree' in js_text or 'formsubmit.co' in js_text:
         add_error("contact-form.js: external form processor still referenced")
@@ -161,7 +161,7 @@ else:
         if not (ROOT / path).is_file():
             add_error(f"Missing direct SMTP backend file: {path}")
     backend_text = (ROOT / 'backend/server.js').read_text(encoding="utf-8")
-    if 'smtpout.secureserver.net' not in backend_text or 'info@blackraven.solutions' not in backend_text:
+    if '/ready' not in backend_text or 'smtpout.secureserver.net' not in backend_text or 'info@blackraven.solutions' not in backend_text:
         add_error("backend: unexpected outbound SMTP configuration")
     if 'enquiry' in js_text and "enquiry') === 'sent'" in js_text:
         add_error("contact-form.js: query-based fake success still present")
