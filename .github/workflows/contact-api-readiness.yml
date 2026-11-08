@@ -11,28 +11,37 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Check first-party Worker health and SMTP readiness without sending email
+      - name: Check actual production Worker (never submit a real email)
         shell: bash
         run: |
           node <<'NODE'
-          const hosts = [
-            'https://blackraven-contact.dan-grmusa.workers.dev',
-            'https://blackraven-contactkopiraj.dan-grmusa.workers.dev'
-          ];
-          for (const host of hosts) {
-            for (const pathname of ['/health', '/ready']) {
-              try {
-                const response = await fetch(host + pathname, {
-                  method: 'GET',
-                  headers: { 'Origin': 'https://blackraven.solutions', 'Accept': 'application/json' },
-                  signal: AbortSignal.timeout(9000)
-                });
-                const body = (await response.text()).slice(0, 220);
-                console.log(host + pathname, 'HTTP', response.status, 'body:', body);
-              } catch (error) {
-                console.log(host + pathname, 'UNREACHABLE', error.name, error.cause?.code || '');
-              }
+          const base = 'https://blackraven-contact.dan-grmusa.workers.dev';
+          const headers = { Origin: 'https://blackraven.solutions', Accept: 'application/json' };
+          async function check(path) {
+            try {
+              const response = await fetch(base + path, {
+                method: 'GET', headers,
+                signal: AbortSignal.timeout(10000),
+                cache: 'no-store'
+              });
+              const body = (await response.text()).slice(0, 300);
+              console.log(path, 'HTTP', response.status, 'content-type:', response.headers.get('content-type'),
+                          'body:', JSON.stringify(body));
+              return { status: response.status, body };
+            } catch (e) {
+              console.log(path, 'NETWORK ERROR', e.name, e.cause?.code || '');
+              return { status: 0, body: '' };
             }
           }
-          // This is an advisory check: real email delivery still needs inbox confirmation.
+          const health = await check('/health');
+          if (health.status !== 200 || !health.body.includes('"status":"up"')) {
+            console.error('Worker route/code is not available. Check Cloudflare production Deployments and Worker URL.');
+            process.exitCode = 1;
+          } else {
+            const ready = await check('/ready');
+            if (ready.status !== 200 || !ready.body.includes('"ready":true')) {
+              console.error('Worker responds but GoDaddy SMTP authentication is NOT ready. Check Cloudflare Logs and Secrets.');
+              process.exitCode = 1;
+            }
+          }
           NODE
