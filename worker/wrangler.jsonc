@@ -8,7 +8,27 @@
     "SITE_ORIGINS": "https://blackraven.solutions,https://www.blackraven.solutions,https://dday2301.github.io"
   },
   "ratelimits": [
-    { "name": "CONTACT_PER_IP", "namespace_id": "842171", "simple": { "limit": 3, "period": 60 } },
-    { "name": "CONTACT_GLOBAL", "namespace_id": "842172", "simple": { "limit": 12, "period": 60 } }
-  ]
+    {
+      "name": "CONTACT_PER_IP",
+      "namespace_id": "842171",
+      "simple": {
+        "limit": 3,
+        "period": 60
+      }
+    },
+    {
+      "name": "CONTACT_GLOBAL",
+      "namespace_id": "842172",
+      "simple": {
+        "limit": 12,
+        "period": 60
+      }
+    }
+  ],
+  "keep_vars": true,
+  "secrets": {
+    "required": [
+      "SMTP_PASS"
+    ]
+  }
 }
