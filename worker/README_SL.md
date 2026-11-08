@@ -9,6 +9,10 @@
 - Ohranimo obstoječe MX/SPF/DKIM/DMARC in GitHub Pages A/CNAME. Za prvo namestitev uporabimo `workers.dev`, zato GoDaddy DNS ni treba spreminjati.
 - Dokler ni nameščen in preverjen Worker, obrazec ostane pravilno onemogočen.
 
+## Prvi Cloudflare Build po povezavi GitHub
+
+Ko Cloudflare Builds pokaže Git repository `DDAY2301/Black-Raven`, produkcijsko vejo `main` in sporočilo, da za prvi build potrebuje nov commit, preveri konfiguracijo: Worker ime `blackraven-contact`, root `worker`, deploy `npx wrangler deploy`. Nato sprememba tega dokumenta v `main` sproži prvi poskus avtomatske namestitve. Uspeh je treba preveriti v Cloudflare → Worker → Deployments/Builds; uspešen GitHub commit **ni** dokaz uspešnega Cloudflare deploya ali dostave e-pošte.
+
 ## Poveži že ustvarjen Worker z repozitorijem
 
 1. Cloudflare → **Compute → Workers & Pages** → izberi Worker **blackraven-contact** (NE blog-lab).
