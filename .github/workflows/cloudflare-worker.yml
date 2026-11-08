@@ -1,0 +1,24 @@
+name: Deploy Black Raven contact Worker (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    name: Deploy direct GoDaddy SMTP Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify worker syntax and simulated SMTP exchange
+        run: |
+          node --check worker/src/index.js
+          node --check worker/src/smtp.js
+          node --test worker/test/*.test.mjs
+      - name: Deploy to Cloudflare (requires repository secrets)
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy
