@@ -25,10 +25,5 @@
       }
     }
   ],
-  "keep_vars": true,
-  "secrets": {
-    "required": [
-      "SMTP_PASS"
-    ]
-  }
+  "keep_vars": true
 }

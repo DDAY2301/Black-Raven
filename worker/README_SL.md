@@ -5,7 +5,7 @@
 ## Trenutno stanje (pomembno)
 - V Cloudflare mora biti ustvarjen Worker z imenom **`blackraven-contact`**. Če se še vedno imenuje `blackraven-contactkopiraj`, je treba ime popraviti oziroma uskladiti z `worker/wrangler.jsonc` pred namestitvijo.
 - Uporabnik je v Cloudflare Production že nastavil `SMTP_USER=info@blackraven.solutions` in zaščiten `SMTP_PASS`. **Ne prenašaj ju v GitHub**.
-- `keep_vars: true` v Wrangler ohranja obstoječo `SMTP_USER` iz Cloudflare Dashboarda. `SMTP_PASS` je zahtevana skrivnost.
+- `keep_vars: true` v Wrangler ohranja obstoječo `SMTP_USER` iz Cloudflare Dashboarda; Cloudflare zaščitenih SMTP skrivnosti ob običajnem `wrangler deploy` ne izbriše. `SMTP_PASS` ostaja nujen za **delovanje**, vendar je bila nastavitev `secrets.required` odstranjena, ker je v povezanem Cloudflare Build sistemu napačno blokirala namestitev. Worker brez `SMTP_PASS` vrne HTTP 503 in nikoli ne pošlje sporočila.
 - Ohranimo obstoječe MX/SPF/DKIM/DMARC in GitHub Pages A/CNAME. Za prvo namestitev uporabimo `workers.dev`, zato GoDaddy DNS ni treba spreminjati.
 - Dokler ni nameščen in preverjen Worker, obrazec ostane pravilno onemogočen.
 
