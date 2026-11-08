@@ -7,6 +7,7 @@
   if (!form || !status || !success || !submitButton) return;
 
   const message = {
+    checking: { sl: 'Preverjam povezavo za varno pošiljanje …', en: 'Checking the secure mail connection …' },
     offline: {
       sl: 'Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions.',
       en: 'Online form sending is temporarily unavailable. Please email info@blackraven.solutions instead.'
@@ -30,12 +31,51 @@
     status.hidden = hide;
   };
 
-  // Use only the HTTPS endpoint of our own API. SMTP credentials stay server-side.
-  // Do not enable until the backend is deployed and verified.
+  // Send ONLY through our own authenticated SMTP backend.
+  // Never expose SMTP credentials in the browser or activate on a nonexistent API.
   const endpoint = (form.dataset.endpoint || '').trim();
   const configured = endpoint === 'https://api.blackraven.solutions/contact';
-  submitButton.disabled = !configured;
-  setStatus('offline', configured);
+  const readyUrl = 'https://api.blackraven.solutions/ready';
+  let available = false;
+  let checking = null;
+  submitButton.disabled = true;
+
+  const checkReady = () => {
+    if (checking) return checking;
+    if (!configured) {
+      setStatus('offline');
+      return Promise.resolve(false);
+    }
+    setStatus('checking');
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 6500);
+    checking = fetch(readyUrl, {
+      method: 'GET', headers: { Accept: 'application/json' },
+      mode: 'cors', credentials: 'omit', redirect: 'error',
+      referrerPolicy: 'no-referrer', cache: 'no-store',
+      signal: controller.signal
+    }).then(async (response) => {
+      const result = response.ok ? await response.json().catch(() => ({})) : {};
+      available = response.ok && result.ready === true;
+      submitButton.disabled = !available;
+      setStatus('offline', available);
+      return available;
+    }).catch(() => {
+      available = false;
+      submitButton.disabled = true;
+      setStatus('offline');
+      return false;
+    }).finally(() => {
+      window.clearTimeout(timer);
+      checking = null;
+    });
+    return checking;
+  };
+
+  checkReady();
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !available) checkReady();
+  });
 
   const url = new URL(window.location.href);
   const topic = (url.searchParams.get('topic') || '').trim().slice(0, 160);
@@ -62,7 +102,7 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault(); // Never navigate to a third-party form website.
     success.hidden = true;
-    if (!configured) {
+    if (!configured || !available) {
       setStatus('offline');
       return;
     }
@@ -113,7 +153,7 @@
       setStatus('failed');
     } finally {
       window.clearTimeout(timeout);
-      submitButton.disabled = false;
+      submitButton.disabled = !available;
       submitButton.removeAttribute('aria-busy');
     }
   });
