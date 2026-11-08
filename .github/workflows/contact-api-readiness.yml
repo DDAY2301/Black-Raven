@@ -26,15 +26,17 @@ jobs:
               });
               const body = (await response.text()).slice(0, 300);
               console.log(path, 'HTTP', response.status, 'content-type:', response.headers.get('content-type'),
-                          'body:', JSON.stringify(body));
+                          'server:', response.headers.get('server'), 'cf-ray:', response.headers.get('cf-ray'),
+                          'location:', response.headers.get('location'), 'body:', JSON.stringify(body));
               return { status: response.status, body };
             } catch (e) {
               console.log(path, 'NETWORK ERROR', e.name, e.cause?.code || '');
               return { status: 0, body: '' };
             }
           }
+          const root = await check('/');
           const health = await check('/health');
-          if (health.status !== 200 || !health.body.includes('"status":"up"')) {
+          if (health.status !== 200 || !health.body.includes('"status":"up"') || root.status !== 200) {
             console.error('Worker route/code is not available. Check Cloudflare production Deployments and Worker URL.');
             process.exitCode = 1;
           } else {

@@ -82,8 +82,10 @@ async function parseBody(request) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/health" && request.method === "GET") {
-      return json(200, { status: "up" });
+    // The root route deliberately reports a minimal health status too.
+    // This distinguishes a live Worker from a Cloudflare edge-level blank 404.
+    if ((url.pathname === "/" || url.pathname === "/health") && request.method === "GET") {
+      return json(200, { status: "up", service: "blackraven-contact" });
     }
     if (!["/contact", "/ready"].includes(url.pathname)) {
       return json(404, { error: "Not found" });
