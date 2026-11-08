@@ -34,8 +34,20 @@
   // Send ONLY through our own authenticated SMTP backend.
   // Never expose SMTP credentials in the browser or activate on a nonexistent API.
   const endpoint = (form.dataset.endpoint || '').trim();
-  const configured = endpoint === 'https://api.blackraven.solutions/contact';
-  const readyUrl = 'https://api.blackraven.solutions/ready';
+  // Only the company-owned API or a dedicated Cloudflare Worker is permitted.
+  // The actual workers.dev subdomain is configured after deployment.
+  let configured = false;
+  let readyUrl = '';
+  try {
+    const parsed = new URL(endpoint);
+    const trustedApi = parsed.hostname === 'api.blackraven.solutions'
+      || /^blackraven-contact\.[a-z0-9-]+\.workers\.dev$/.test(parsed.hostname);
+    configured = parsed.protocol === 'https:' && trustedApi
+      && parsed.pathname === '/contact' && !parsed.search && !parsed.hash;
+    readyUrl = configured ? parsed.origin + '/ready' : '';
+  } catch (_) {
+    configured = false;
+  }
   let available = false;
   let checking = null;
   submitButton.disabled = true;
