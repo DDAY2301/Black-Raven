@@ -15,7 +15,28 @@ const SMTP_PASS = process.env.SMTP_PASS || '';
 const SMTP_HOST = process.env.SMTP_HOST || 'smtpout.secureserver.net';
 const SMTP_PORT = Number(process.env.SMTP_PORT || 465);
 const ORIGINS = allowedOrigins(process.env.SITE_ORIGINS);
-const configured = Boolean(SMTP_USER && SMTP_PASS && ORIGINS.size && Number.isInteger(SMTP_PORT));
+const configured = Boolean(SMTP_USER && SMTP_PASS && SMTP_PASS !== 'REPLACE_ON_SERVER_ONLY' &&
+  ORIGINS.size && Number.isInteger(SMTP_PORT) && SMTP_PORT > 0 && SMTP_PORT < 65536);
+let readyCheck = null;
+let lastReady = false;
+let readyExpires = 0;
+
+async function smtpReady() {
+  if (!configured) return false;
+  if (Date.now() < readyExpires) return lastReady;
+  if (readyCheck) return readyCheck;
+  readyCheck = transport.verify().then((verified) => {
+    lastReady = verified === true;
+    readyExpires = Date.now() + (lastReady ? 60000 : 15000);
+    return lastReady;
+  }).catch((error) => {
+    console.error('SMTP readiness failed:', error.code || 'connection');
+    lastReady = false;
+    readyExpires = Date.now() + 15000;
+    return false;
+  }).finally(() => { readyCheck = null; });
+  return readyCheck;
+}
 const transport = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
@@ -89,6 +110,12 @@ async function jsonBody(req) {
 http.createServer(async (req, res) => {
   if (req.url === '/health' && req.method === 'GET') {
     return respond(res, 200, { status: 'up' });
+  }
+  if (req.url === '/ready' && req.method === 'GET') {
+    const origin = req.headers.origin || '';
+    if (!ORIGINS.has(origin)) return respond(res, 403, { ready: false });
+    const ready = await smtpReady();
+    return respond(res, ready ? 200 : 503, { ready }, origin);
   }
   if (req.url !== '/contact' || !['POST', 'OPTIONS'].includes(req.method)) {
     return respond(res, 404, { error: 'Not found' });
