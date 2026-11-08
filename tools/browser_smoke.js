@@ -84,7 +84,7 @@
             }
             if (await page.locator('.contact-form-jump, .contact-email-alternative').count()) issues.push(tag + ': duplicate contact CTAs remain');
             const endPoint = await contact.getAttribute('data-endpoint');
-            if (endPoint !== '') issues.push(tag + ': endpoint must be blank until verified');
+            if (endPoint !== 'https://api.blackraven.solutions/contact') issues.push(tag + ': wrong first-party endpoint');
             if (await contact.getAttribute('action') !== null) issues.push(tag + ': old external form action still present');
             if (!(await page.locator('.contact-form-submit').isDisabled())) issues.push(tag + ': form must be disabled when unconfigured');
             if (!(await page.locator('#contact-form-status').isVisible())) issues.push(tag + ': offline notice not visible');
@@ -132,10 +132,12 @@
     const page = await context.newPage();
     const mockEndpoint = 'https://api.blackraven.solutions/contact';
     let accepted = 0;
-    await page.route('**/o-nas.html', async route => {
-      const response = await route.fetch();
-      const html = (await response.text()).replace('data-endpoint=""', 'data-endpoint="' + mockEndpoint + '"');
-      await route.fulfill({ response, body: html });
+    await page.route('https://api.blackraven.solutions/ready', async route => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify({ ready: true })
+      });
     });
     await page.route(mockEndpoint, async route => {
       if (route.request().method() === 'OPTIONS') {
@@ -162,7 +164,9 @@
       });
     });
     await page.goto(base + 'o-nas.html', { waitUntil: 'load' });
-    if (await page.locator('.contact-form-submit').isDisabled()) issues.push('contact AJAX mock: valid endpoint stayed disabled');
+    try {
+      await page.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 7000 });
+    } catch (_) { issues.push('contact AJAX mock: API readiness did not enable submit'); }
     await page.locator('#contact-name').fill('Browser Test');
     await page.locator('#contact-email').fill('visitor@example.org');
     await page.locator('#contact-message').fill('Safe mocked test message only');

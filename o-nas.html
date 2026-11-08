@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-mail-v2">
   <link rel="stylesheet" href="assets/css/contact-form.css?v=20261105-secure-v3">
   <script defer src="assets/js/main.js?v=20261010-ultimate-v5"></script>
-  <script defer src="assets/js/contact-form.js?v=20261105-direct-smtp-v1"></script>
+  <script defer src="assets/js/contact-form.js?v=20261108-live-smtp-v2"></script>
 </head>
 <body class="inner-page about-page"
   data-title-sl="O nas in kontakt — Black Raven Solutions"
@@ -99,9 +99,9 @@
             <p data-sl="Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa." data-en="Send an enquiry without opening your email app.">Izpolni obrazec in pošlji povpraševanje brez odpiranja e-poštnega programa.</p>
           </div>
           <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo." data-en="Thank you! Your enquiry was accepted for processing.">Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo.</p>
-          <p id="contact-form-status" class="contact-form-status" role="status" aria-live="polite" data-sl="Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions." data-en="Online form sending is temporarily unavailable. Please email info@blackraven.solutions instead.">Pošiljanje prek obrazca je začasno nedosegljivo. Piši neposredno na info@blackraven.solutions.</p>
+          <p id="contact-form-status" class="contact-form-status" role="status" aria-live="polite" data-sl="Preverjam povezavo za varno pošiljanje …" data-en="Checking the secure mail connection …">Preverjam povezavo za varno pošiljanje …</p>
           <p class="contact-form-topic" id="contact-form-topic-display" hidden><strong data-sl="Tema:" data-en="Topic:">Tema:</strong> <span id="contact-topic-label"></span></p>
-          <form id="contact-enquiry-form" class="contact-form" method="POST" data-endpoint="" aria-describedby="contact-form-status">
+          <form id="contact-enquiry-form" class="contact-form" method="POST" data-endpoint="https://api.blackraven.solutions/contact" aria-describedby="contact-form-status">
             <input type="hidden" name="_subject" value="Novo povpraševanje - Black Raven Solutions">
             <input type="hidden" id="contact-topic" name="topic" value="">
             <div class="contact-form-honeypot" aria-hidden="true">
