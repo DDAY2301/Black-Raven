@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-mail-v2">
   <link rel="stylesheet" href="assets/css/contact-form.css?v=20261105-secure-v3">
   <script defer src="assets/js/main.js?v=20261010-ultimate-v5"></script>
-  <script defer src="assets/js/contact-form.js?v=20261108-live-smtp-v2"></script>
+  <script defer src="assets/js/contact-form.js?v=20261108-worker-direct-v3"></script>
 </head>
 <body class="inner-page about-page"
   data-title-sl="O nas in kontakt — Black Raven Solutions"
@@ -101,7 +101,7 @@
           <p id="contact-form-success" class="contact-form-success" role="status" tabindex="-1" hidden data-sl="Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo." data-en="Thank you! Your enquiry was accepted for processing.">Hvala! Storitev je sprejela tvoje povpraševanje v obdelavo.</p>
           <p id="contact-form-status" class="contact-form-status" role="status" aria-live="polite" data-sl="Preverjam povezavo za varno pošiljanje …" data-en="Checking the secure mail connection …">Preverjam povezavo za varno pošiljanje …</p>
           <p class="contact-form-topic" id="contact-form-topic-display" hidden><strong data-sl="Tema:" data-en="Topic:">Tema:</strong> <span id="contact-topic-label"></span></p>
-          <form id="contact-enquiry-form" class="contact-form" method="POST" data-endpoint="https://api.blackraven.solutions/contact" aria-describedby="contact-form-status">
+          <form id="contact-enquiry-form" class="contact-form" method="POST" data-endpoint="https://blackraven-contact.dan-grmusa.workers.dev/contact" aria-describedby="contact-form-status">
             <input type="hidden" name="_subject" value="Novo povpraševanje - Black Raven Solutions">
             <input type="hidden" id="contact-topic" name="topic" value="">
             <div class="contact-form-honeypot" aria-hidden="true">
@@ -135,7 +135,7 @@
               <textarea id="contact-message" name="message" rows="5" minlength="10" maxlength="5000" required></textarea>
             </div>
             <p class="contact-form-privacy">
-              <span data-sl="Podatke uporabljamo za odgovor na povpraševanje. Po aktivaciji se sporočilo posreduje prek varne povezave na poslovni poštni strežnik. Ne pošiljaj občutljivih osebnih podatkov." data-en="We use your details to respond to your enquiry. Once active, the message is relayed securely to our business mail server. Do not send sensitive personal details.">Podatke uporabljamo za odgovor na povpraševanje. Po aktivaciji se sporočilo posreduje prek varne povezave na poslovni poštni strežnik. Ne pošiljaj občutljivih osebnih podatkov.</span>
+              <span data-sl="Podatke uporabljamo samo za odgovor na povpraševanje. Sporočilo pošiljamo prek varne povezave na naš poslovni poštni račun. Ne pošiljaj občutljivih osebnih podatkov." data-en="We use your details only to respond to your enquiry. Your message is sent securely to our business email account. Do not send sensitive personal details.">Podatke uporabljamo samo za odgovor na povpraševanje. Sporočilo pošiljamo prek varne povezave na naš poslovni poštni račun. Ne pošiljaj občutljivih osebnih podatkov.</span>
             </p>
             <button class="contact-form-submit" type="submit" disabled>
               <span data-sl="Pošlji povpraševanje" data-en="Send enquiry">Pošlji povpraševanje</span>
