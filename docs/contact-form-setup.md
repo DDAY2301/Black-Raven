@@ -4,7 +4,7 @@ Obiskovalec izpolni obrazec na GitHub Pages. Ob kliku Pošlji pošlje JavaScript
 
 ## Stanje
 
-Obrazec je pripravljen, vendar je namenoma NEAKTIVEN, dokler lastnikov strežnik ni nameščen in preverjen. GitHub Pages sam ne izvaja Node/PHP backend kode. Dokler ni strežnika in SMTP poverilnic, neposredno pošiljanje ni mogoče.
+Obrazec že vsebuje URL `https://api.blackraven.solutions/contact`. Ob odprtju strani preveri `https://api.blackraven.solutions/ready`; šele ko lasten strežnik uspešno potrdi SMTP povezavo, se gumb **samodejno omogoči**. Dokler ni dejanskega strežnika in SMTP poverilnic, obiskovalec vidi pošteno opozorilo in ne more oddati navidezno uspešnega sporočila. GitHub Pages sam ne izvaja Node/PHP backend kode.
 
 ## Strežniška konfiguracija
 
@@ -23,9 +23,9 @@ Obrazec je pripravljen, vendar je namenoma NEAKTIVEN, dokler lastnikov strežnik
 5. Zaženi node server.js kot storitev pod neprivilegiranim sistemskim uporabnikom. Aplikacija privzeto posluša samo na 127.0.0.1:3000.
 6. V GoDaddy DNS dodaj A zapis za subdomeno api na IP strežnika. Obstoječih A zapisov za spletno stran ne spreminjaj.
 7. Na strežniku nastavi HTTPS reverse proxy (Caddy/Nginx) do 127.0.0.1:3000. Predloga: backend/Caddyfile.example. Za omejitve po IP mora proxy povoziti glavo X-Real-IP.
-8. Preveri HTTPS GET https://api.blackraven.solutions/health in zahtevane CORS origin-e.
-9. ŠELE po uspešnem preverjanju v o-nas.html nastavi data-endpoint="https://api.blackraven.solutions/contact" namesto praznega data-endpoint. Ta URL ne obstaja sam od sebe.
-10. Testiraj oddajo iz spletnega obrazca z nenevarnimi podatki in dejansko preveri prejem v predalu, tudi Reply-To, mobilni prikaz, napake in omejitve.
+8. Preveri HTTPS `GET https://api.blackraven.solutions/health` (ustrezen odgovor je `{"status":"up"}`). To **ne** pomeni, da SMTP deluje.
+9. Preveri `GET https://api.blackraven.solutions/ready` z dovoljeno glavo `Origin: https://blackraven.solutions`. Pri uspešno preverjenem SMTP mora vrniti HTTP 200 in `{"ready":true}`; sicer HTTP 503 in `{"ready":false}`. Obrazec na strani to preveri sam in **ne potrebuje nove objave HTML**.
+10. Testiraj oddajo iz spletnega obrazca z nenevarnimi podatki in dejansko preveri prejem v predalu, tudi Reply-To, mobilni prikaz, napake in omejitve. SMTP sprejem še ni dokaz dostave v Inbox.
 
 ## Varnost in omejitve
 
