@@ -31,62 +31,87 @@
     status.hidden = hide;
   };
 
-  // Send ONLY through our own authenticated SMTP backend.
-  // Never expose SMTP credentials in the browser or activate on a nonexistent API.
-  const endpoint = (form.dataset.endpoint || '').trim();
-  // Only the company-owned API or a dedicated Cloudflare Worker is permitted.
-  // The actual workers.dev subdomain is configured after deployment.
-  let configured = false;
-  let readyUrl = '';
-  try {
-    const parsed = new URL(endpoint);
-    const trustedApi = parsed.hostname === 'api.blackraven.solutions'
-      || /^blackraven-contact\.[a-z0-9-]+\.workers\.dev$/.test(parsed.hostname);
-    configured = parsed.protocol === 'https:' && trustedApi
-      && parsed.pathname === '/contact' && !parsed.search && !parsed.hash;
-    readyUrl = configured ? parsed.origin + '/ready' : '';
-  } catch (_) {
-    configured = false;
-  }
+  // Only contact the Black Raven API or the two Cloudflare Worker hostnames
+  // previously created under the site owner's Cloudflare account.
+  // A Worker must pass an actual /ready SMTP check before any message is sent.
+  const fallbackHosts = [
+    'https://blackraven-contact.dan-grmusa.workers.dev/contact',
+    'https://blackraven-contactkopiraj.dan-grmusa.workers.dev/contact'
+  ];
+  const allowedHosts = new Set([
+    'api.blackraven.solutions',
+    'blackraven-contact.dan-grmusa.workers.dev',
+    'blackraven-contactkopiraj.dan-grmusa.workers.dev'
+  ]);
+  const isOwnedEndpoint = (candidate) => {
+    try {
+      const parsed = new URL(candidate);
+      return parsed.protocol === 'https:' && allowedHosts.has(parsed.hostname)
+        && parsed.pathname === '/contact' && !parsed.search && !parsed.hash
+        && !parsed.username && !parsed.password && !parsed.port;
+    } catch (_) {
+      return false;
+    }
+  };
+  const candidates = [...new Set([form.dataset.endpoint || '', ...fallbackHosts].filter(isOwnedEndpoint))];
+  let endpoint = '';
   let available = false;
   let checking = null;
   submitButton.disabled = true;
 
+  async function endpointIsReady(candidate) {
+    const readyUrl = new URL('/ready', candidate).href;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 3500);
+    try {
+      const response = await fetch(readyUrl, {
+        method: 'GET', headers: { Accept: 'application/json' },
+        mode: 'cors', credentials: 'omit', redirect: 'error',
+        referrerPolicy: 'no-referrer', cache: 'no-store',
+        signal: controller.signal
+      });
+      if (!response.ok) return false;
+      const result = await response.json().catch(() => null);
+      return result?.ready === true;
+    } catch (_) {
+      return false;
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
   const checkReady = () => {
     if (checking) return checking;
-    if (!configured) {
+    if (!candidates.length) {
       setStatus('offline');
       return Promise.resolve(false);
     }
     setStatus('checking');
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 6500);
-    checking = fetch(readyUrl, {
-      method: 'GET', headers: { Accept: 'application/json' },
-      mode: 'cors', credentials: 'omit', redirect: 'error',
-      referrerPolicy: 'no-referrer', cache: 'no-store',
-      signal: controller.signal
-    }).then(async (response) => {
-      const result = response.ok ? await response.json().catch(() => ({})) : {};
-      available = response.ok && result.ready === true;
-      submitButton.disabled = !available;
-      setStatus('offline', available);
-      return available;
-    }).catch(() => {
+    checking = (async () => {
+      for (const candidate of candidates) {
+        if (await endpointIsReady(candidate)) {
+          endpoint = candidate;
+          available = true;
+          submitButton.disabled = false;
+          setStatus('offline', true);
+          return true;
+        }
+      }
+      endpoint = '';
       available = false;
       submitButton.disabled = true;
       setStatus('offline');
       return false;
-    }).finally(() => {
-      window.clearTimeout(timer);
-      checking = null;
-    });
+    })().finally(() => { checking = null; });
     return checking;
   };
 
   checkReady();
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && !available) checkReady();
+  });
+  window.addEventListener('online', () => {
+    if (!available) checkReady();
   });
 
   const url = new URL(window.location.href);
@@ -114,7 +139,7 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault(); // Never navigate to a third-party form website.
     success.hidden = true;
-    if (!configured || !available) {
+    if (!available || !endpoint) {
       setStatus('offline');
       return;
     }

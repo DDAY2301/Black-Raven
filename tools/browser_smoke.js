@@ -86,8 +86,10 @@
             const endPoint = await contact.getAttribute('data-endpoint');
             if (endPoint !== 'https://api.blackraven.solutions/contact') issues.push(tag + ': wrong first-party endpoint');
             if (await contact.getAttribute('action') !== null) issues.push(tag + ': old external form action still present');
-            if (!(await page.locator('.contact-form-submit').isDisabled())) issues.push(tag + ': form must be disabled when unconfigured');
-            if (!(await page.locator('#contact-form-status').isVisible())) issues.push(tag + ': offline notice not visible');
+            // The button is disabled when no SMTP endpoint is ready; it may become
+            // enabled when the owner's Worker has successfully authenticated.
+            const canSubmit = !(await page.locator('.contact-form-submit').isDisabled());
+            if (!canSubmit && !(await page.locator('#contact-form-status').isVisible())) issues.push(tag + ': unavailable form has no status notice');
             if (await page.locator('#contact-form-success').isVisible()) issues.push(tag + ': false success shown');
             const invalid = await contact.evaluate(el => !el.checkValidity());
             if (!invalid) issues.push(tag + ': empty required fields passed validation');
@@ -175,6 +177,55 @@
     catch (_) { issues.push('contact AJAX mock: no success after accepted response'); }
     if (accepted !== 1) issues.push('contact AJAX mock: request count ' + accepted);
     if (!page.url().startsWith(base + 'o-nas.html')) issues.push('contact AJAX mock: redirected away from site');
+
+    // Regression: the old API hostname may be absent. A verified, site-owned
+    // Cloudflare Worker must then be used for the same on-page submission.
+    await page.unroute('https://api.blackraven.solutions/ready');
+    await page.route('https://api.blackraven.solutions/ready', async route => {
+      await route.fulfill({
+        status: 503,
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify({ ready: false })
+      });
+    });
+    const workerOrigin = 'https://blackraven-contact.dan-grmusa.workers.dev';
+    let fallbackAccepted = 0;
+    await page.route(workerOrigin + '/ready', async route => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify({ ready: true })
+      });
+    });
+    await page.route(workerOrigin + '/contact', async route => {
+      if (route.request().method() === 'OPTIONS') {
+        return route.fulfill({ status: 204, headers: {
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'POST, OPTIONS',
+          'access-control-allow-headers': 'Content-Type'
+        }, body: '' });
+      }
+      fallbackAccepted += 1;
+      await route.fulfill({
+        status: 202,
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify({ accepted: true })
+      });
+    });
+    await page.goto(base + 'o-nas.html', { waitUntil: 'load' });
+    try {
+      await page.waitForFunction(() => !document.querySelector('.contact-form-submit')?.disabled, null, { timeout: 9000 });
+    } catch (_) { issues.push('contact Worker fallback: readiness did not enable form'); }
+    if (!(await page.locator('.contact-form-submit').isDisabled())) {
+      await page.locator('#contact-name').fill('Browser Worker Test');
+      await page.locator('#contact-email').fill('visitor@example.org');
+      await page.locator('#contact-message').fill('Fallback SMTP simulation without external transmission');
+      await page.locator('.contact-form-submit').click();
+      try {
+        await page.locator('#contact-form-success').waitFor({ state: 'visible', timeout: 5000 });
+      } catch (_) { issues.push('contact Worker fallback: accepted response not displayed'); }
+    }
+    if (fallbackAccepted !== 1) issues.push('contact Worker fallback: expected one send, got ' + fallbackAccepted);
     await context.close();
   } finally {
     await browser.close();
