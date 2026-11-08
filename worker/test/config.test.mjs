@@ -18,4 +18,9 @@ test("runtime rejects missing SMTP password and does not send without readiness"
   assert.match(script, /!password/);
   assert.match(script, /if \(!config\(env\)\) return json\(503/);
   assert.match(script, /if \(!await ready\(env\)\) return json\(503/);
+  assert.match(script, /runtime_credentials_missing/);
+  assert.match(script, /smtp_auth_rejected/);
+  assert.match(script, /smtp_timeout/);
+  assert.match(script, /smtp_socket_or_tls_failure/);
+
 });
