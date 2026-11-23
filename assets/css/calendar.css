@@ -1,0 +1,40 @@
+/* Calendar: Black Raven's restrained woodland palette and accessible controls. */
+.br-calendar-section{padding:clamp(3.5rem,8vw,7rem) 0;background:#eaece5;color:#122018;scroll-margin-top:6rem}
+.br-calendar-intro{max-width:58rem;margin:0 0 2rem}
+.br-calendar-intro .kicker{color:#486552}
+.br-calendar-intro h2{margin:.7rem 0;font-family:Newsreader,Georgia,serif;font-size:clamp(2.1rem,4.5vw,3.8rem);line-height:1.05}
+.br-calendar-intro p{max-width:44rem;line-height:1.65}
+.br-calendar-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start}
+.br-calendar-panel,.br-calendar-list-panel{background:#f9faf6;border:1px solid #cad3c8;border-radius:14px;padding:clamp(1rem,2.6vw,1.8rem);box-shadow:0 16px 38px #1124170c}
+.br-calendar-toolbar{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.br-calendar-toolbar strong{font-size:1.2rem;text-transform:capitalize;letter-spacing:.01em}
+.br-calendar-controls{display:flex;gap:.35rem}
+.br-calendar-controls button,.br-calendar-today{font:inherit;border:1px solid #b4c1b3;background:#fff;color:#16311f;border-radius:7px;min-width:2.5rem;min-height:2.5rem;cursor:pointer}
+.br-calendar-controls button:hover,.br-calendar-controls button:focus-visible,.br-calendar-today:hover,.br-calendar-today:focus-visible{background:#dfe8dc;outline-offset:3px}
+.br-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.35rem}
+.br-calendar-weekday{text-align:center;font-size:.76rem;font-weight:800;text-transform:uppercase;color:#647466;padding:.4rem 0}
+.br-calendar-empty{min-height:2.6rem}
+.br-calendar-day{position:relative;min-height:clamp(2.25rem,4.5vw,3.5rem);border:1px solid transparent;border-radius:8px;background:#eef2eb;color:#173622;font:inherit;font-weight:650;cursor:pointer}
+.br-calendar-day:hover,.br-calendar-day:focus-visible{background:#d3e3d0;outline:2px solid #447d52;outline-offset:1px}
+.br-calendar-day.is-today{border-color:#849e83}
+.br-calendar-day.is-selected{background:#173f27;color:#fff}
+.br-calendar-day.has-event{font-weight:800}
+.br-event-dot{position:absolute;bottom:.27rem;left:calc(50% - .18rem);background:#cb7548;width:.36rem;height:.36rem;border-radius:100%}
+.br-calendar-day.is-selected .br-event-dot{background:#ffca82}
+.br-calendar-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;gap:.5rem}
+.br-calendar-footer small{color:#5a705f}
+.br-calendar-today{padding:0 .75rem;white-space:nowrap}
+.br-calendar-list-panel h3{font-family:Newsreader,Georgia,serif;font-size:clamp(1.6rem,2.5vw,2.2rem);margin:0 0 1rem}
+.br-calendar-note{color:#58675b;line-height:1.6;padding:.75rem 0;font-size:.95rem}
+.br-calendar-items{display:grid;gap:1rem}
+.br-event-card{border-top:1px solid #cbd5c8;padding:1rem 0 0}
+.br-event-card:first-child{border-top:0;padding-top:0}
+.br-event-date{font-size:.85rem;font-weight:800;color:#a4512e;letter-spacing:.04em}
+.br-event-card h3{font:600 1.4rem/1.2 Newsreader,Georgia,serif;margin:.35rem 0}
+.br-event-location,.br-event-description{line-height:1.5;margin:.4rem 0}
+.br-event-location{font-weight:650}
+.br-event-link{display:inline-block;color:#215536;font-weight:800;text-decoration:underline;text-underline-offset:3px;margin-top:.55rem}
+.br-event-contact{display:block;font-size:.88rem;color:#637265;margin-top:.55rem}
+.br-calendar-programmes{display:inline-block;margin-top:1.5rem;color:#28543a;font-weight:750;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:760px){.br-calendar-layout{grid-template-columns:1fr}.br-calendar-section{padding:3.5rem 0}.br-calendar-day{min-height:2.7rem}.br-calendar-grid{gap:.2rem}}
+@media(prefers-reduced-motion:reduce){.br-calendar-section *{scroll-behavior:auto}}
