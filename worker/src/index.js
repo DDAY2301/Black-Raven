@@ -1,4 +1,5 @@
 import { connect } from "cloudflare:sockets";
+import { handleContent } from "./content.js";
 import { validateEnquiry, formatEmailText } from "../../backend/lib.js";
 import { composeMail, smtpTransaction } from "./smtp.js";
 
@@ -102,6 +103,8 @@ async function parseBody(request) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const contentResponse = await handleContent(request, env, url);
+    if (contentResponse) return contentResponse;
     // The root route deliberately reports a minimal health status too.
     // This distinguishes a live Worker from a Cloudflare edge-level blank 404.
     if ((url.pathname === "/" || url.pathname === "/health") && request.method === "GET") {
