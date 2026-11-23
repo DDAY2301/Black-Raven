@@ -23,7 +23,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/images/gallery-wild-camp.webp?v=20261007-drive-gallery-v1">
   <link rel="stylesheet" href="assets/css/styles.css?v=20261010-mail-v2">
+  <link rel="stylesheet" href="assets/css/calendar.css?v=20261123-1">
   <script defer src="assets/js/main.js?v=20261010-ultimate-v5"></script>
+  <script defer src="assets/js/calendar.js?v=20261123-1"></script>
 </head>
 <body class="home"
   data-title-sl="Black Raven Solutions — Wilderness Academy"
@@ -40,6 +42,7 @@
       <span class="brand-copy"><strong>Black Raven Solutions</strong><span>Wilderness Academy</span></span>
     </a>
     <nav class="nav-links" id="site-navigation" aria-label="Primary navigation">
+      <a href="#koledar" data-sl="Termini" data-en="Dates">Termini</a>
       <a href="#programi" aria-current="page" data-sl="Programi" data-en="Programs">Programi</a>
       <a href="gallery.html" data-sl="Galerija" data-en="Gallery">Galerija</a>
       <a href="video.html" data-sl="Videi" data-en="Videos">Videi</a>
@@ -67,7 +70,7 @@
         <h1 data-sl="Pristen stik z naravo." data-en="A genuine connection with nature.">Pristen stik z naravo.</h1>
         <p class="hero-intro" data-sl="Znanje za bivanje v naravi. Več samostojnosti. Manj strahu pred divjim. Več prostora za kreativnost, skupnost in izkušnje, ki ostanejo." data-en="Skills for living outdoors. More independence. Less fear of the wild. More room for creativity, community and experiences that stay with you.">Znanje za bivanje v naravi. Več samostojnosti. Manj strahu pred divjim. Več prostora za kreativnost, skupnost in izkušnje, ki ostanejo.</p>
         <div class="hero-actions">
-          <a class="btn btn-ember" href="#programi" data-sl="Poglej programe" data-en="Explore programs">Poglej programe</a>
+          <a class="btn btn-ember" href="#koledar" data-sl="Poglej termine" data-en="See dates">Poglej termine</a>
           <a class="text-link" href="o-nas.html#contact-enquiry-form" data-sl="Vprašaj za termin" data-en="Ask about dates">Vprašaj za termin <span>↗</span></a>
         </div>
         <div class="hero-meta" aria-label="Black Raven overview">
@@ -103,7 +106,7 @@
       </div>
 
       <div class="field-index-list">
-        <a href="#vikend-tecaji"><span class="field-no">01</span><strong data-sl="Vikend tečaji" data-en="Weekend courses">Vikend tečaji</strong><span class="field-meta" data-sl="5 formatov" data-en="5 formats">5 formatov</span><b>↘</b></a>
+        <a href="#koledar"><span class="field-no">01</span><strong data-sl="Vikend tečaji" data-en="Weekend courses">Vikend tečaji</strong><span class="field-meta" data-sl="5 formatov" data-en="5 formats">5 formatov</span><b>↘</b></a>
         <a href="#tabori"><span class="field-no">02</span><strong data-sl="Poletni in zimski tabori" data-en="Summer & winter camps">Poletni in zimski tabori</strong><span class="field-meta" data-sl="večdnevno" data-en="multi-day">večdnevno</span><b>↘</b></a>
         <a href="#delavnice"><span class="field-no">03</span><strong data-sl="Delavnice" data-en="Workshops">Delavnice</strong><span class="field-meta" data-sl="6 tem" data-en="6 themes">6 tem</span><b>↘</b></a>
         <a href="#team-building"><span class="field-no">04</span><strong>Team building</strong><span class="field-meta" data-sl="za ekipe" data-en="for teams">za ekipe</span><b>↘</b></a>
@@ -152,6 +155,38 @@
           <h3 data-sl="Skupnost in komunikacija" data-en="Community & communication">Skupnost in komunikacija</h3>
           <p data-sl="Pogovori ob ognju, čas za refleksijo, glasba in petje, jasno vodenje, delegiranje nalog, skupinska dinamika in nenasilna komunikacija." data-en="Fireside conversation, time for reflection, music and singing, clear leadership, task delegation, group dynamics and non-violent communication.">Pogovori ob ognju, čas za refleksijo, glasba in petje, jasno vodenje, delegiranje nalog, skupinska dinamika in nenasilna komunikacija.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="br-calendar-section" id="koledar" aria-labelledby="calendar-title">
+    <div class="wrap" id="black-raven-calendar">
+      <div class="br-calendar-intro">
+        <span class="kicker" data-sl="TEČAJI / DATUMI" data-en="COURSES / DATES">TEČAJI / DATUMI</span>
+        <h2 id="calendar-title" data-sl="Koledar tečajev in dogodkov." data-en="Courses and events calendar.">Koledar tečajev in dogodkov.</h2>
+        <p data-sl="Izberi mesec in preveri potrjene termine. Če datuma še ni, nam pošlji povpraševanje — novih izvedb ne napovedujemo, dokler niso potrjene." data-en="Select a month to see confirmed dates. If there is no date yet, send us an enquiry — we only announce verified sessions.">Izberi mesec in preveri potrjene termine. Če datuma še ni, nam pošlji povpraševanje — novih izvedb ne napovedujemo, dokler niso potrjene.</p>
+      </div>
+      <div class="br-calendar-layout">
+        <div class="br-calendar-panel">
+          <div class="br-calendar-toolbar">
+            <strong data-calendar-month aria-live="polite"></strong>
+            <div class="br-calendar-controls">
+              <button type="button" data-calendar-prev aria-label="Prejšnji mesec" title="Previous month">‹</button>
+              <button type="button" data-calendar-next aria-label="Naslednji mesec" title="Next month">›</button>
+            </div>
+          </div>
+          <div class="br-calendar-grid" data-calendar-grid role="group" aria-label="Koledar dogodkov"></div>
+          <div class="br-calendar-footer">
+            <small data-sl="Pika označuje dan z dogodkom." data-en="A dot marks an event date.">Pika označuje dan z dogodkom.</small>
+            <button type="button" class="br-calendar-today" data-calendar-today data-sl="Danes" data-en="Today">Danes</button>
+          </div>
+        </div>
+        <div class="br-calendar-list-panel" aria-live="polite">
+          <h3 data-sl="Razpisani termini" data-en="Scheduled sessions">Razpisani termini</h3>
+          <div class="br-calendar-items" data-calendar-list></div>
+          <p class="br-calendar-note" data-calendar-note></p>
+          <a class="br-calendar-programmes" href="#vikend-tecaji" data-sl="Spoznaj vse vrste tečajev ↘" data-en="Explore course formats ↘">Spoznaj vse vrste tečajev ↘</a>
+        </div>
       </div>
     </div>
   </section>
