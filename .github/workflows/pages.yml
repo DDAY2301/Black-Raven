@@ -15,11 +15,11 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         with:
           enablement: true
       - name: Stage only public website files
@@ -28,7 +28,7 @@ jobs:
           cp -- *.html *.xml *.txt favicon.png favicon.svg .nojekyll public/
           if [ -f CNAME ]; then cp CNAME public/; fi
           cp -R assets public/assets
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: public
       - name: Deploy to GitHub Pages
