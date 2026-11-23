@@ -42,6 +42,25 @@
         for (const img of details.images.filter(i => !i.loaded)) issues.push(tag + ': broken/unfinished image ' + img.src);
         if (errors.length) issues.push(tag + ': uncaught JS errors ' + errors.join(' | '));
   
+        // Calendar: first course action scrolls to a real, keyboard-operable month view.
+        if (name === 'index.html') {
+          const calendar = page.locator('#black-raven-calendar');
+          if (await calendar.count() !== 1) issues.push(tag + ': calendar missing');
+          else {
+            if (await page.locator('.hero-actions .btn').getAttribute('href') !== '#koledar') issues.push(tag + ': hero CTA does not target calendar');
+            const monthBefore = await page.locator('[data-calendar-month]').textContent();
+            await page.locator('[data-calendar-next]').click();
+            const monthAfter = await page.locator('[data-calendar-month]').textContent();
+            if (!monthBefore || !monthAfter || monthBefore === monthAfter) issues.push(tag + ': month navigation failed');
+            await page.locator('[data-calendar-prev]').click();
+            if (await page.locator('.br-calendar-day').count() < 28) issues.push(tag + ': calendar day grid incomplete');
+            const day = page.locator('.br-calendar-day').first();
+            await day.click();
+            if (await day.getAttribute('aria-pressed') !== 'true') issues.push(tag + ': calendar date selection failed');
+            if ((await page.locator('[data-calendar-note]').textContent()).trim().length === 0) issues.push(tag + ': no honest empty-calendar state');
+          }
+        }
+
         // Verify language control and language persistence across pages.
         await page.locator('[data-lang="en"]').click();
         if ((await page.locator('html').getAttribute('lang')) !== 'en') issues.push(tag + ': English switch failed');
